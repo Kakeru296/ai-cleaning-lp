@@ -536,7 +536,12 @@ function getTime(service, room) {
   return times[room];
 }
 
+// レート制限: 同一セッションで2回以上送信を防止
+let _submitted = false;
+
 async function submitContact() {
+  if (_submitted) { alert('すでに送信済みです。'); return; }
+
   const name  = document.getElementById('inp-name').value.trim();
   const phone = document.getElementById('inp-phone').value.trim();
   const date  = document.getElementById('inp-date').value;
@@ -546,6 +551,13 @@ async function submitContact() {
     return;
   }
 
+  // 基本バリデーション（スパム対策）
+  if (name.length > 100 || phone.length > 20) {
+    alert('入力内容が不正です。');
+    return;
+  }
+
+  _submitted = true;
   const btn = document.getElementById('submitBtn');
   btn.textContent = '送信中...';
   btn.disabled = true;
@@ -575,12 +587,18 @@ async function submitContact() {
   document.getElementById('result').style.display = 'none';
   const thanks = document.getElementById('thanks');
   thanks.style.display = 'block';
+  // XSS対策: ユーザー入力はtextContentまたはエスケープして挿入
+  function esc(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
   document.getElementById('thanks-detail').innerHTML =
-    `📋 ${payload.service} / ${payload.room}<br>` +
-    `💰 ${payload.price}〜（目安）<br>` +
-    `👤 ${payload.name} 様<br>` +
-    `📞 ${payload.phone}` +
-    (date ? `<br>📅 ご希望日：${date}` : '');
+    `📋 ${esc(payload.service)} / ${esc(payload.room)}<br>` +
+    `💰 ${esc(payload.price)}〜（目安）<br>` +
+    `👤 ${esc(payload.name)} 様<br>` +
+    `📞 ${esc(payload.phone)}` +
+    (date ? `<br>📅 ご希望日：${esc(date)}` : '');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
