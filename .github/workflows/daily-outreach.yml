@@ -2,8 +2,8 @@ name: 毎日の清掃会社アウトリーチ
 
 on:
   schedule:
-    # 毎日朝9時（JST = UTC+9 → UTC 0:00）
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'   # 毎日9時JST
+    - cron: '0 6 * * *'   # 毎日15時JST（2回目・別エリア）
   workflow_dispatch: # 手動実行も可能
 
 jobs:
