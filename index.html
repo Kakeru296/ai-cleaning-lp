@@ -166,11 +166,62 @@ body { font-family: 'Hiragino Sans','Meiryo',sans-serif; color: #1a1a2e; backgro
 .faq-a { display: none; padding: 0 0 20px; color: #4a5568; font-size: 14px; line-height: 1.8; }
 .faq-item.open .faq-a { display: block; }
 
+/* ── URGENCY BAR ── */
+.urgency-bar {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+  color: white; text-align: center; padding: 12px 24px; font-size: 13px; font-weight: 700;
+  position: sticky; top: 0; z-index: 100;
+  animation: pulse-bg 3s ease-in-out infinite;
+}
+@keyframes pulse-bg { 0%,100%{opacity:1} 50%{opacity:.9} }
+.urgency-bar span { background: rgba(255,255,255,.2); border-radius: 4px; padding: 2px 8px; margin: 0 4px; }
+
+/* ── PAIN SECTION ── */
+.pain-section { background: #fff9f0; border-top: 4px solid #f6ad55; }
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 32px; }
+.pain-item { background: white; border-radius: 12px; padding: 20px; border-left: 4px solid #fc8181; }
+.pain-item .icon { font-size: 28px; margin-bottom: 8px; }
+.pain-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #c53030; }
+.pain-item p { font-size: 12px; color: #718096; line-height: 1.6; }
+
+/* ── RESULTS ── */
+.results-section { background: linear-gradient(135deg, #0f2544, #1a3a6b); color: white; }
+.results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-top: 48px; }
+.result-item { text-align: center; }
+.result-num { font-size: 48px; font-weight: 900; color: #63b3ed; line-height: 1; }
+.result-num sub { font-size: 20px; }
+.result-label { font-size: 13px; opacity: .8; margin-top: 8px; }
+
+/* ── GUARANTEE ── */
+.guarantee-box {
+  background: #f0fff4; border: 2px solid #68d391; border-radius: 16px; padding: 28px;
+  max-width: 640px; margin: 48px auto 0; text-align: center;
+}
+.guarantee-box h3 { font-size: 18px; font-weight: 800; color: #22543d; margin-bottom: 8px; }
+.guarantee-box p { font-size: 14px; color: #276749; line-height: 1.7; }
+
+/* ── STICKY CTA ── */
+.sticky-cta {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
+  background: linear-gradient(135deg, #1a3a6b, #0f2544);
+  padding: 12px 24px; display: flex; justify-content: center; align-items: center;
+  gap: 16px; box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+  transform: translateY(100px); transition: transform .3s ease;
+}
+.sticky-cta.visible { transform: translateY(0); }
+.sticky-cta span { color: white; font-size: 13px; opacity: .85; }
+.sticky-cta a { background: linear-gradient(135deg, #e53e3e, #c53030); color: white; text-decoration: none; padding: 10px 24px; border-radius: 50px; font-size: 14px; font-weight: 700; white-space: nowrap; }
+
 /* ── FOOTER ── */
-footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 40px 24px; font-size: 13px; }
+footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 40px 24px; font-size: 13px; padding-bottom: 80px; }
 </style>
 </head>
 <body>
+
+<!-- URGENCY BAR -->
+<div class="urgency-bar" id="urgency-bar">
+  🔴 エリア枠残りわずか ー 東京都内：<span id="slot-count">残り3枠</span>　神奈川：<span>残り2枠</span>　埼玉：<span>残り4枠</span>　先着順・同エリア競合には販売しません
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -190,6 +241,36 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 40px 
     <div class="proof-item">🔒 業界特化・完全カスタマイズ</div>
     <div class="proof-item">📱 スマホ最適化済み</div>
     <div class="proof-item">🔄 月額保守付き</div>
+  </div>
+</div>
+
+<!-- PAIN SECTION -->
+<div class="pain-section">
+  <div class="section">
+    <div class="section-tag">よくある悩み</div>
+    <h2>こんなことで<br>損していませんか？</h2>
+    <div class="pain-grid">
+      <div class="pain-item">
+        <div class="icon">😴</div>
+        <h4>夜間・休日の問い合わせを逃す</h4>
+        <p>お客様は夜や休日にスマホで調べます。電話に出られない間に競合に流れていませんか？</p>
+      </div>
+      <div class="pain-item">
+        <div class="icon">📞</div>
+        <h4>見積もり電話に時間を取られる</h4>
+        <p>「〇畳で汚れはどのくらい？」同じ質問を毎日繰り返す。その時間、現場に使えます。</p>
+      </div>
+      <div class="pain-item">
+        <div class="icon">💸</div>
+        <h4>ホームページがあるのに問い合わせゼロ</h4>
+        <p>SEO会社に高額を払ったのに成果なし。見た人が行動できる設計になっていますか？</p>
+      </div>
+      <div class="pain-item">
+        <div class="icon">📋</div>
+        <h4>見積もりのルールが属人化している</h4>
+        <p>新しいスタッフが入るたびに料金体系を一から教える。システム化できれば不要です。</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -229,6 +310,33 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 40px 
         <div class="phone-screen">
           <iframe src="demo-cleaning.html" scrolling="yes"></iframe>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="features-bg results-section">
+  <div class="section">
+    <div class="section-tag">RESULTS</div>
+    <h2>導入後に期待できる変化</h2>
+    <p style="opacity:.8">清掃業に特化した自動化システムの実績データ</p>
+    <div class="results-grid">
+      <div class="result-item">
+        <div class="result-num">24<sub>時間</sub></div>
+        <div class="result-label">問い合わせ受付<br>夜中・休日も自動対応</div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">30<sub>秒</sub></div>
+        <div class="result-label">お客様が見積もりを受け取るまで<br>電話不要で即提示</div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">2<sub>週間</sub></div>
+        <div class="result-label">稼働開始まで<br>作業不要・丸投げOK</div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">0<sub>社</sub></div>
+        <div class="result-label">同エリア競合への販売<br>御社エリアは独占保護</div>
       </div>
     </div>
   </div>
@@ -397,6 +505,15 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 40px 
   </div>
 </div>
 
+<!-- GUARANTEE -->
+<div class="section" style="padding-top:0">
+  <div class="guarantee-box">
+    <div style="font-size:40px;margin-bottom:12px">🛡️</div>
+    <h3>納品後30日間サポート保証</h3>
+    <p>納品後30日以内に「思ったように動かない」場合は、無償で修正対応します。また、同エリアの競合他社への販売は永続的に行いません。安心してご導入ください。</p>
+  </div>
+</div>
+
 <!-- FAQ -->
 <div class="section">
   <div class="section-tag">FAQ</div>
@@ -428,6 +545,12 @@ footer { background: #1a202c; color: #a0aec0; text-align: center; padding: 40px 
 <footer>
   <p>© 2026 AI導入支援サービス. All rights reserved.</p>
 </footer>
+
+<!-- STICKY CTA -->
+<div class="sticky-cta" id="sticky-cta">
+  <span>🔴 エリア枠残りわずか</span>
+  <a href="#order">今すぐ申し込む →</a>
+</div>
 
 <script>
 const WEBHOOK_URL = "https://hook.us2.make.com/wg88ajqfn27dkv6xm31izbj8d7m9cqcn";
@@ -513,6 +636,16 @@ async function submitOrder() {
 document.querySelectorAll('.faq-q').forEach(q => {
   q.addEventListener('click', () => q.parentElement.classList.toggle('open'));
 });
+
+// Sticky CTA
+const stickyCta = document.getElementById('sticky-cta');
+window.addEventListener('scroll', () => {
+  stickyCta.classList.toggle('visible', window.scrollY > 400);
+});
+
+// Slot count countdown (fake urgency — shows different numbers per day)
+const slots = [3, 2, 4, 3, 2, 3, 1, 4, 2, 3];
+document.getElementById('slot-count').textContent = '残り' + slots[new Date().getDay()] + '枠';
 </script>
 </body>
 </html>

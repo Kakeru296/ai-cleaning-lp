@@ -11,23 +11,33 @@ const MY_NAME  = 'AI導入支援担当';
 const LP_URL   = 'https://kakeru296.github.io/ai-cleaning-lp/';
 const DEMO_URL = 'https://kakeru296.github.io/ai-cleaning-lp/demo-cleaning.html';
 
-const MESSAGE = `突然のご連絡失礼いたします。清掃会社様専門でAI業務自動化のご支援をしております。
+// エリア別・会社名別でメッセージを個別化
+function buildMessage(companyName, area) {
+  const areaShort = area.replace('東京都', '').replace('神奈川県', '').replace('埼玉県', '').replace('千葉県', '').replace('大阪府', '').replace('愛知県', '').replace('福岡県', '').replace('北海道', '').replace('京都府', '').replace('兵庫県', '');
+  return `突然のご連絡失礼いたします。
 
-「夜中や休日の見積もり問い合わせを取りこぼしていませんか？」
+${companyName}様の${areaShort}でのご活躍をGoogleマップで拝見いたしました。
+清掃会社様専門でAI業務自動化のご支援をしております。
 
-お客様がスマホで間取りを選ぶだけで自動見積もりが表示され、社長さんに即通知が届く仕組みを作っています。
+1点だけご確認ください。
+「夜中や休日の見積もり問い合わせ、取りこぼしていませんか？」
+
+お客様がスマホで間取りと汚れ具合を選ぶだけで自動見積もりが表示され、
+社長さんのLINE・メールに即通知が届く仕組みを作っています。
 
 ▼ 30秒で動作確認できるデモ（返信不要）
 ${DEMO_URL}
 
-・24時間自動で見積もり・問い合わせ受付
-・御社専用カスタマイズで最短2週間納品
-・初期費用75,000円〜（同エリア競合他社には販売しません）
+・24時間自動で見積もり受付（電話不要）
+・${areaShort}エリアは御社に独占保護（同業他社には販売しません）
+・最短2週間納品・初期費用75,000円〜
 
-詳細・お申し込みはこちら（フォームから完結します）:
-${LP_URL}
+詳細・お申し込み: ${LP_URL}
 
 ご不要の場合はそのままで構いません。`;
+}
+
+const MESSAGE = buildMessage('御社', '東京都');
 
 // 全国の攻略エリアリスト（毎日ローテーション）
 const ALL_AREAS = [
@@ -131,10 +141,11 @@ async function submitContactForm(page, company) {
       return { success: false, reason: 'フォームなし' };
     }
 
+    const personalizedMsg = buildMessage(company.name, company.area);
     if (await nameInput.count() > 0) await nameInput.fill(MY_NAME).catch(() => {});
     if (await emailInput.count() > 0) await emailInput.fill(MY_EMAIL).catch(() => {});
     if (await phoneInput.count() > 0) await phoneInput.fill('090-0000-0000').catch(() => {});
-    if (await msgInput.count() > 0) await msgInput.fill(MESSAGE).catch(() => {});
+    if (await msgInput.count() > 0) await msgInput.fill(personalizedMsg).catch(() => {});
 
     const submitBtn = page.locator('button[type="submit"], input[type="submit"], button:has-text("送信"), button:has-text("確認")').first();
     if (await submitBtn.count() > 0) {
