@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>かんたん見積もり | クリーンプロ</title>
+<!-- ============================================================
+  設定: Make.com の Webhook URL をここに貼り付けるだけで
+  問い合わせ内容がメールで届くようになります
+  ============================================================ -->
+<script>
+  const WEBHOOK_URL = "https://hook.us2.make.com/wg88ajqfn27dkv6xm31izbj8d7m9cqcn";
+  const COMPANY_NAME = "クリーンプロ";
+  const LINE_URL = "https://lin.ee/XXXXXXX"; // LINE公式アカウントのURL
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    background: #f0f4f8;
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 100%);
+    color: white;
+    padding: 20px 24px 28px;
+    text-align: center;
+  }
+  .header .logo { font-size: 13px; opacity: 0.8; letter-spacing: 2px; margin-bottom: 8px; }
+  .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .header p { font-size: 13px; opacity: 0.85; }
+
+  .badge-row {
+    display: flex; gap: 8px; justify-content: center; margin-top: 14px; flex-wrap: wrap;
+  }
+  .badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+  }
+
+  .container { max-width: 480px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .step-label {
+    font-size: 11px;
+    color: #2d6a9f;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .card h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: #1a1a2e;
+  }
+
+  .option-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .option-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .option-grid.four { grid-template-columns: 1fr 1fr; }
+
+  .opt {
+    border: 2px solid #e8ecf0;
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: #fafbfc;
+  }
+  .opt:active { transform: scale(0.97); }
+  .opt.selected {
+    border-color: #2d6a9f;
+    background: #eef5fb;
+    color: #1e3a5f;
+  }
+  .opt .icon { font-size: 24px; margin-bottom: 4px; }
+  .opt .label { font-size: 12px; font-weight: 600; }
+  .opt .sub { font-size: 10px; color: #888; margin-top: 2px; }
+  .opt.selected .sub { color: #5590c0; }
+
+  .dirty-opt {
+    border: 2px solid #e8ecf0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .dirty-opt:last-child { margin-bottom: 0; }
+  .dirty-opt.selected { border-color: #2d6a9f; background: #eef5fb; }
+  .dirty-opt .d-icon { font-size: 22px; width: 36px; text-align: center; }
+  .dirty-opt .d-text { flex: 1; }
+  .dirty-opt .d-label { font-size: 13px; font-weight: 600; }
+  .dirty-opt .d-desc { font-size: 11px; color: #888; margin-top: 2px; }
+  .dirty-opt.selected .d-desc { color: #5590c0; }
+  .dirty-opt .d-plus {
+    font-size: 11px;
+    font-weight: 700;
+    color: #e07b39;
+    background: #fff3ea;
+    padding: 3px 8px;
+    border-radius: 8px;
+  }
+  .dirty-opt.selected .d-check { color: #2d6a9f; font-size: 18px; }
+  .dirty-opt .d-check { color: transparent; font-size: 18px; }
+
+  .btn-calc {
+    width: 100%;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.15s, transform 0.1s;
+    letter-spacing: 0.5px;
+  }
+  .btn-calc:active { transform: scale(0.98); opacity: 0.9; }
+  .btn-calc:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* 結果 */
+  #result { display: none; }
+  .result-card {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 100%);
+    border-radius: 16px;
+    padding: 24px 20px;
+    color: white;
+    text-align: center;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px rgba(45,106,159,0.35);
+  }
+  .result-card .r-label { font-size: 12px; opacity: 0.8; margin-bottom: 6px; }
+  .result-card .r-price {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 4px;
+  }
+  .result-card .r-range { font-size: 12px; opacity: 0.75; margin-bottom: 16px; }
+  .result-card .r-divider {
+    border-top: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 16px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 6px;
+    opacity: 0.85;
+  }
+
+  .info-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .info-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+  .info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .info-row .i-icon { font-size: 18px; margin-top: 1px; }
+  .info-row .i-text { flex: 1; line-height: 1.5; }
+  .info-row strong { font-weight: 700; display: block; margin-bottom: 1px; }
+  .info-row span { color: #666; font-size: 12px; }
+
+  .btn-contact {
+    width: 100%;
+    background: #25d366;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.15s;
+  }
+  .btn-contact:active { opacity: 0.85; }
+
+  .btn-reset {
+    width: 100%;
+    background: none;
+    color: #888;
+    border: 2px solid #e8ecf0;
+    border-radius: 14px;
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .note { font-size: 11px; color: #aaa; text-align: center; margin-top: 12px; line-height: 1.6; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate { animation: fadeIn 0.35s ease; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">CLEAN PRO</div>
+  <h1>無料 かんたん見積もり</h1>
+  <p>3つの質問に答えるだけで<br>すぐに料金の目安がわかります</p>
+  <div class="badge-row">
+    <span class="badge">⚡ 即時表示</span>
+    <span class="badge">📱 24時間対応</span>
+    <span class="badge">🔒 個人情報不要</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- フォーム -->
+  <div id="form-section">
+
+    <!-- STEP 1: サービス -->
+    <div class="card">
+      <div class="step-label">STEP 1</div>
+      <h2>清掃の種類を選んでください</h2>
+      <div class="option-grid">
+        <div class="opt" onclick="select('service','regular',this)">
+          <div class="icon">🏠</div>
+          <div class="label">定期清掃</div>
+          <div class="sub">月1〜2回</div>
+        </div>
+        <div class="opt" onclick="select('service','moveout',this)">
+          <div class="icon">📦</div>
+          <div class="label">引越し清掃</div>
+          <div class="sub">退去・入居前</div>
+        </div>
+        <div class="opt" onclick="select('service','aircon',this)">
+          <div class="icon">❄️</div>
+          <div class="label">エアコン</div>
+          <div class="sub">内部洗浄</div>
+        </div>
+        <div class="opt" onclick="select('service','water',this)">
+          <div class="icon">🚿</div>
+          <div class="label">水回り</div>
+          <div class="sub">浴室・キッチン</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: 部屋の広さ -->
+    <div class="card">
+      <div class="step-label">STEP 2</div>
+      <h2>お部屋の広さを選んでください</h2>
+      <div class="option-grid four">
+        <div class="opt" onclick="select('room','1k',this)">
+          <div class="icon">🔲</div>
+          <div class="label">1R / 1K</div>
+          <div class="sub">〜30㎡</div>
+        </div>
+        <div class="opt" onclick="select('room','1dk',this)">
+          <div class="icon">🔳</div>
+          <div class="label">1DK</div>
+          <div class="sub">30〜45㎡</div>
+        </div>
+        <div class="opt" onclick="select('room','1ldk',this)">
+          <div class="icon">⬛</div>
+          <div class="label">1LDK</div>
+          <div class="sub">45〜60㎡</div>
+        </div>
+        <div class="opt" onclick="select('room','2ldk',this)">
+          <div class="icon">🟦</div>
+          <div class="label">2LDK</div>
+          <div class="sub">60〜80㎡</div>
+        </div>
+        <div class="opt" onclick="select('room','3ldk',this)">
+          <div class="icon">🟪</div>
+          <div class="label">3LDK</div>
+          <div class="sub">80〜100㎡</div>
+        </div>
+        <div class="opt" onclick="select('room','4ldk',this)">
+          <div class="icon">🟥</div>
+          <div class="label">4LDK〜</div>
+          <div class="sub">100㎡〜</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: 汚れ具合 -->
+    <div class="card">
+      <div class="step-label">STEP 3</div>
+      <h2>現在の汚れ具合は？</h2>
+      <div class="dirty-opt" onclick="select('dirty','light',this)">
+        <div class="d-icon">✨</div>
+        <div class="d-text">
+          <div class="d-label">きれいな方</div>
+          <div class="d-desc">日常的に清掃している</div>
+        </div>
+        <div class="d-check">✓</div>
+      </div>
+      <div class="dirty-opt" onclick="select('dirty','normal',this)">
+        <div class="d-icon">🧹</div>
+        <div class="d-text">
+          <div class="d-label">普通</div>
+          <div class="d-desc">数ヶ月清掃していない</div>
+        </div>
+        <div class="d-plus">+20%</div>
+      </div>
+      <div class="dirty-opt" onclick="select('dirty','heavy',this)">
+        <div class="d-icon">💦</div>
+        <div class="d-text">
+          <div class="d-label">かなり汚れている</div>
+          <div class="d-desc">半年以上・ヤニ汚れあり</div>
+        </div>
+        <div class="d-plus">+50%</div>
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calcBtn" onclick="calculate()" disabled>
+      見積もりを計算する →
+    </button>
+    <p class="note">この見積もりは目安です。現地確認後に正式なお見積もりをご提示します。</p>
+  </div>
+
+  <!-- 結果 -->
+  <div id="result">
+    <div class="result-card animate">
+      <div class="r-label">お見積もり金額（目安）</div>
+      <div class="r-price" id="r-price">¥00,000</div>
+      <div class="r-range" id="r-range">〜 ¥00,000</div>
+      <div class="r-divider"></div>
+      <div class="detail-row"><span id="r-service"></span><span id="r-room"></span></div>
+      <div class="detail-row"><span id="r-dirty"></span><span id="r-time"></span></div>
+    </div>
+
+    <div class="info-card animate">
+      <h3>📋 含まれるサービス内容</h3>
+      <div id="service-detail"></div>
+    </div>
+
+    <div class="info-card animate">
+      <h3>🏅 選ばれる3つの理由</h3>
+      <div class="info-row">
+        <div class="i-icon">⚡</div>
+        <div class="i-text">
+          <strong>最短当日対応</strong>
+          <span>ご連絡いただければ最短当日〜翌日に伺います</span>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="i-icon">✅</div>
+        <div class="i-text">
+          <strong>仕上がり保証付き</strong>
+          <span>ご満足いただけない場合は無料で再清掃いたします</span>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="i-icon">🔒</div>
+        <div class="i-text">
+          <strong>損害賠償保険加入済み</strong>
+          <span>万一の際も安心。作業員は全員研修修了者です</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: 連絡先入力 -->
+    <div class="card animate">
+      <div class="step-label">STEP 4（任意）</div>
+      <h2>ご連絡先を入力すると<br>1時間以内に折り返します</h2>
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;color:#666;display:block;margin-bottom:6px">お名前</label>
+        <input id="inp-name" type="text" placeholder="例：田中 太郎" style="width:100%;padding:12px 14px;border:2px solid #e8ecf0;border-radius:10px;font-size:14px;outline:none;font-family:inherit" onfocus="this.style.borderColor='#2d6a9f'" onblur="this.style.borderColor='#e8ecf0'">
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:12px;color:#666;display:block;margin-bottom:6px">電話番号</label>
+        <input id="inp-phone" type="tel" placeholder="例：090-0000-0000" style="width:100%;padding:12px 14px;border:2px solid #e8ecf0;border-radius:10px;font-size:14px;outline:none;font-family:inherit" onfocus="this.style.borderColor='#2d6a9f'" onblur="this.style.borderColor='#e8ecf0'">
+      </div>
+      <div style="margin-bottom:18px">
+        <label style="font-size:12px;color:#666;display:block;margin-bottom:6px">ご希望の作業日（任意）</label>
+        <input id="inp-date" type="date" style="width:100%;padding:12px 14px;border:2px solid #e8ecf0;border-radius:10px;font-size:14px;outline:none;font-family:inherit;color:#1a1a2e" onfocus="this.style.borderColor='#2d6a9f'" onblur="this.style.borderColor='#e8ecf0'">
+      </div>
+      <button class="btn-calc" id="submitBtn" onclick="submitContact()" style="margin-top:0">
+        送信して予約リクエストする →
+      </button>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:center;margin:8px 0">
+      <div style="flex:1;height:1px;background:#e8ecf0"></div>
+      <span style="font-size:11px;color:#aaa">または</span>
+      <div style="flex:1;height:1px;background:#e8ecf0"></div>
+    </div>
+
+    <button class="btn-contact" onclick="contactLine()">
+      <span style="font-size:20px">💬</span>
+      LINEで相談・予約する
+    </button>
+    <button class="btn-reset" onclick="reset()">← 見積もりをやり直す</button>
+    <p class="note">※ 上記料金は税込み目安金額です。広さ・汚れ状況により変動する場合があります。<br>現地確認後に正式なお見積もりをご提示いたします。</p>
+  </div>
+
+  <!-- 送信完了画面 -->
+  <div id="thanks" style="display:none">
+    <div style="text-align:center;padding:40px 20px 20px">
+      <div style="font-size:64px;margin-bottom:16px">✅</div>
+      <h2 style="font-size:22px;font-weight:800;margin-bottom:10px">送信が完了しました！</h2>
+      <p style="font-size:14px;color:#555;line-height:1.7;margin-bottom:24px">
+        ご連絡ありがとうございます。<br>
+        <strong>1時間以内</strong>に担当者よりお電話いたします。<br>
+        しばらくお待ちください。
+      </p>
+      <div style="background:#eef5fb;border-radius:14px;padding:16px;margin-bottom:24px;text-align:left">
+        <div style="font-size:12px;color:#2d6a9f;font-weight:700;margin-bottom:10px">お見積もりサマリー</div>
+        <div id="thanks-detail" style="font-size:13px;color:#333;line-height:2"></div>
+      </div>
+    </div>
+    <button class="btn-reset" style="margin:0 16px;width:calc(100% - 32px)" onclick="resetAll()">最初からやり直す</button>
+  </div>
+
+</div>
+
+<script>
+const selections = { service: null, room: null, dirty: null };
+
+const prices = {
+  service: { regular: 1.0, moveout: 1.5, aircon: 0, water: 1.2 },
+  room:    { '1k': 15000, '1dk': 20000, '1ldk': 25000, '2ldk': 35000, '3ldk': 45000, '4ldk': 60000 },
+  dirty:   { light: 1.0, normal: 1.2, heavy: 1.5 },
+};
+
+const labels = {
+  service: { regular: '定期清掃', moveout: '引越し清掃', aircon: 'エアコン洗浄', water: '水回り清掃' },
+  room:    { '1k': '1R/1K', '1dk': '1DK', '1ldk': '1LDK', '2ldk': '2LDK', '3ldk': '3LDK', '4ldk': '4LDK〜' },
+  dirty:   { light: '普通の汚れ', normal: 'やや汚れあり', heavy: 'かなり汚れ' },
+};
+
+const serviceDetails = {
+  regular: [
+    { icon: '🧹', title: 'リビング・洋室', desc: '床清掃・掃き・拭き、家具の上のホコリ取り' },
+    { icon: '🚿', title: 'トイレ・洗面台', desc: '便器・タンク・床の除菌清掃' },
+    { icon: '🍳', title: 'キッチン', desc: 'コンロ周り・シンク・排水口清掃' },
+  ],
+  moveout: [
+    { icon: '🏠', title: '全室クリーニング', desc: '壁・天井・床・窓まで徹底清掃' },
+    { icon: '🚿', title: '水回り完全洗浄', desc: '浴室・トイレ・洗面・キッチン全て' },
+    { icon: '❄️', title: 'エアコンフィルター', desc: 'フィルター洗浄・送風口清掃含む' },
+  ],
+  aircon: [
+    { icon: '❄️', title: '内部高圧洗浄', desc: 'フィン・ファン・ドレンパンを徹底洗浄' },
+    { icon: '🦠', title: '抗菌・防カビ処理', desc: '専用コーティングで清潔を長期キープ' },
+    { icon: '✅', title: '動作確認', desc: '作業後に冷暖房の動作を確認してお渡し' },
+  ],
+  water: [
+    { icon: '🛁', title: '浴室全体', desc: '鏡のウロコ・カビ・浴槽まで徹底除去' },
+    { icon: '🍳', title: 'キッチン', desc: 'レンジフード・シンク・コンロの油汚れ除去' },
+    { icon: '🚿', title: 'トイレ・洗面台', desc: '黒ずみ・水垢・尿石を専用洗剤で除去' },
+  ],
+};
+
+function select(type, value, el) {
+  selections[type] = value;
+  el.closest('.card').querySelectorAll('.opt, .dirty-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  checkReady();
+}
+
+function checkReady() {
+  const ready = selections.service && selections.room && selections.dirty;
+  document.getElementById('calcBtn').disabled = !ready;
+}
+
+function calculate() {
+  const { service, room, dirty } = selections;
+  let base;
+
+  if (service === 'aircon') {
+    base = 12000;
+  } else {
+    base = prices.room[room] * prices.service[service] * prices.dirty[dirty];
+  }
+
+  const low = Math.ceil(base / 1000) * 1000;
+  const high = Math.ceil(base * 1.2 / 1000) * 1000;
+
+  document.getElementById('r-price').textContent = '¥' + low.toLocaleString();
+  document.getElementById('r-range').textContent = '〜 ¥' + high.toLocaleString() + '（目安）';
+  document.getElementById('r-service').textContent = '🏷 ' + labels.service[service];
+  document.getElementById('r-room').textContent = service === 'aircon' ? '台数：1台' : '📐 ' + labels.room[room];
+  document.getElementById('r-dirty').textContent = '🧼 ' + labels.dirty[dirty];
+  document.getElementById('r-time').textContent = '⏱ 所要: ' + getTime(service, room);
+
+  const detail = serviceDetails[service];
+  document.getElementById('service-detail').innerHTML = detail.map(d =>
+    `<div class="info-row"><div class="i-icon">${d.icon}</div><div class="i-text"><strong>${d.title}</strong><span>${d.desc}</span></div></div>`
+  ).join('');
+
+  document.getElementById('form-section').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function getTime(service, room) {
+  if (service === 'aircon') return '約1.5〜2時間';
+  const times = { '1k': '2〜3時間', '1dk': '2.5〜3.5時間', '1ldk': '3〜4時間', '2ldk': '4〜5時間', '3ldk': '5〜6時間', '4ldk': '6〜8時間' };
+  return times[room];
+}
+
+async function submitContact() {
+  const name  = document.getElementById('inp-name').value.trim();
+  const phone = document.getElementById('inp-phone').value.trim();
+  const date  = document.getElementById('inp-date').value;
+
+  if (!name || !phone) {
+    alert('お名前と電話番号を入力してください。');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = '送信中...';
+  btn.disabled = true;
+
+  const { service, room, dirty } = selections;
+  const payload = {
+    name, phone, date,
+    service: labels.service[service],
+    room: service === 'aircon' ? 'エアコン1台' : labels.room[room],
+    dirty: labels.dirty[dirty],
+    price: document.getElementById('r-price').textContent,
+    submitted_at: new Date().toLocaleString('ja-JP'),
+  };
+
+  // Make.com webhook に送信（URL未設定時はデモモード）
+  if (WEBHOOK_URL !== "YOUR_MAKE_WEBHOOK_URL_HERE") {
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch (e) { /* ネットワークエラーは無視して完了画面へ */ }
+  }
+
+  // 完了画面へ
+  document.getElementById('result').style.display = 'none';
+  const thanks = document.getElementById('thanks');
+  thanks.style.display = 'block';
+  document.getElementById('thanks-detail').innerHTML =
+    `📋 ${payload.service} / ${payload.room}<br>` +
+    `💰 ${payload.price}〜（目安）<br>` +
+    `👤 ${payload.name} 様<br>` +
+    `📞 ${payload.phone}` +
+    (date ? `<br>📅 ご希望日：${date}` : '');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function contactLine() {
+  window.location.href = LINE_URL;
+}
+
+function resetAll() {
+  document.getElementById('thanks').style.display = 'none';
+  reset();
+}
+
+function reset() {
+  Object.keys(selections).forEach(k => selections[k] = null);
+  document.querySelectorAll('.opt, .dirty-opt').forEach(e => e.classList.remove('selected'));
+  document.getElementById('calcBtn').disabled = true;
+  document.getElementById('form-section').style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

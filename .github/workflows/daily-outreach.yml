@@ -1,0 +1,28 @@
+name: 毎日の清掃会社アウトリーチ
+
+on:
+  schedule:
+    # 毎日朝9時（JST = UTC+9 → UTC 0:00）
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 手動実行も可能
+
+jobs:
+  outreach:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright
+        run: |
+          npm install playwright
+          npx playwright install chromium --with-deps
+
+      - name: Run daily outreach
+        run: node daily-outreach.js
+        env:
+          # 何日目かで送信エリアを自動ローテーション
+          RUN_DATE: ${{ github.run_number }}

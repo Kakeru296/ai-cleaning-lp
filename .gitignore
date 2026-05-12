@@ -1,0 +1,3 @@
+stripe-setup.js
+*.json
+node_modules/
