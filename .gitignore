@@ -1,4 +1,5 @@
 stripe-setup.js
 *.json
 !package.json
+!seo/*.json
 node_modules/
