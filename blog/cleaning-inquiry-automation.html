@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ハウスクリーニング会社が夜間の問い合わせを逃さない仕組みの作り方</title>
+<meta name="description" content="ハウスクリーニング会社向けに、夜間・休日の問い合わせを自動化して取りこぼしをゼロにする方法を解説。LINE自動通知・自動見積もりの導入手順も紹介。">
+<link rel="canonical" href="https://kakeru296.github.io/ai-cleaning-lp/blog/cleaning-inquiry-automation.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGXL8YP9MT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XGXL8YP9MT');
+</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Sans','Meiryo',sans-serif; color: #1a1a2e; background: #fff; line-height: 1.8; }
+.header { background: #1a1a2e; color: white; padding: 16px 24px; }
+.header a { color: #ffd700; text-decoration: none; font-size: 14px; }
+.container { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 26px; line-height: 1.5; margin-bottom: 16px; }
+h2 { font-size: 20px; margin: 40px 0 16px; padding-left: 12px; border-left: 4px solid #e65100; }
+h3 { font-size: 17px; margin: 28px 0 10px; color: #333; }
+p { margin-bottom: 16px; color: #333; }
+.meta { font-size: 13px; color: #888; margin-bottom: 32px; }
+.highlight { background: #fff8e1; border-left: 4px solid #ffd700; padding: 16px 20px; margin: 24px 0; border-radius: 4px; }
+.cta { background: linear-gradient(135deg, #e65100, #ff6f00); color: white; text-align: center; padding: 32px 24px; border-radius: 12px; margin-top: 48px; }
+.cta h3 { color: white; margin: 0 0 12px; font-size: 20px; }
+.cta a { display: inline-block; background: white; color: #e65100; font-weight: 700; padding: 14px 36px; border-radius: 50px; text-decoration: none; margin-top: 16px; font-size: 16px; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+th, td { padding: 10px 14px; border: 1px solid #ddd; font-size: 14px; }
+th { background: #f5f5f5; font-weight: 700; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
+li { margin-bottom: 8px; color: #333; }
+</style>
+</head>
+<body>
+<div class="header"><a href="../index.html">← トップページへ戻る</a></div>
+<div class="container">
+  <p class="meta">2025年5月 | Kakeru｜問合わせを逃さない仕組み屋</p>
+  <h1>ハウスクリーニング会社が夜間の問い合わせを逃さない仕組みの作り方</h1>
+
+  <div class="highlight">
+    <strong>この記事でわかること</strong><br>
+    ・なぜ夜間の問い合わせが重要なのか<br>
+    ・取りこぼしが起きる原因と3つの対策<br>
+    ・最小コストで自動化を実現する方法
+  </div>
+
+  <h2>なぜ夜間の問い合わせが重要なのか</h2>
+  <p>ハウスクリーニングを依頼したいと思う瞬間は、営業時間外に訪れることが多いです。調理中に換気扇の汚れが気になった夜、週末に大掃除を思い立った土曜日——こうしたタイミングでスマホから検索・問い合わせするユーザーは全体の40%以上を占めます。</p>
+  <p>この時間帯に「電話が繋がらない」「フォームに送ったが返信がない」と感じたユーザーは、すぐに競合他社のサイトへ移動します。問い合わせを受けていないのではなく、受けた後に逃しているケースが大半です。</p>
+
+  <h2>取りこぼしが起きる3つの原因</h2>
+  <h3>1. 営業時間外は完全停止になっている</h3>
+  <p>電話主体の会社では夜間・休日は受付ゼロです。フォームがあっても翌営業日に返信するパターンが多く、その間にユーザーは意思決定を終えています。</p>
+
+  <h3>2. 見積もりを出すまでのステップが多い</h3>
+  <p>「電話で詳しく聞く」「現地見積もりの日程調整」という流れは、問い合わせのハードルを上げます。特に初めての業者へのアクションは心理的抵抗があります。</p>
+
+  <h3>3. スマホ検索からの意思決定が速い</h3>
+  <p>モバイルユーザーが業者を決めるまでの時間は平均30分以内とも言われます。この時間内に反応できなければ、失注はほぼ確定します。</p>
+
+  <h2>問い合わせ自動化の3つの方法</h2>
+
+  <h3>方法1：自動見積もりフォームを設置する</h3>
+  <p>お客様がスマホで「間取り」「汚れ具合」「対象箇所」を選ぶと自動で金額が計算されるフォームです。入力後すぐに金額が表示されるため、電話なしで見積もりが完結します。</p>
+
+  <h3>方法2：LINE自動通知と組み合わせる</h3>
+  <p>フォーム送信のたびに社長のLINEへリアルタイム通知が届く仕組みです。「申し込みが来たらすぐ折り返す」ことができ、競合より先に動けます。深夜でも翌朝一番に確認できます。</p>
+
+  <h3>方法3：チャットボットで会話型対応</h3>
+  <p>Webサイトに自動応答チャットを設置する方法です。質問を段階的に進めながら見積もり金額を提示できます。ただし設定の複雑さと月額費用（1〜3万円）がネックになります。</p>
+
+  <h2>コスト・効果の比較</h2>
+  <table>
+    <tr><th>方法</th><th>初期費用</th><th>月額</th><th>対応速度</th></tr>
+    <tr><td>自動見積もり＋LINE通知</td><td>数万円〜</td><td>ほぼ0円</td><td>即時</td></tr>
+    <tr><td>チャットボット</td><td>0円〜</td><td>1〜3万円</td><td>即時</td></tr>
+    <tr><td>電話対応のみ（現状）</td><td>0円</td><td>0円</td><td>翌営業日</td></tr>
+  </table>
+
+  <p>コストパフォーマンスが高いのは「自動見積もりフォーム＋LINE通知」の組み合わせです。一度作ってしまえば月額ランニングコストはほぼゼロで、24時間365日受付できます。</p>
+
+  <h2>最短2週間で稼働できる</h2>
+  <p>自社でエンジニアを雇って構築すると30〜100万円・2〜3ヶ月かかります。専門の自動化サービスを利用すれば、最短2週間・数万円で同じ仕組みが動き始めます。</p>
+  <p>まず1社だけ試して効果を確認してから本格展開するのが、リスクの少ない進め方です。</p>
+
+  <h2>まとめ</h2>
+  <p>夜間・休日の問い合わせは全体の40%以上。この時間帯を押さえるだけで、受注件数は大きく変わります。自動見積もり＋LINE即時通知の組み合わせが、最もコスパよく問い合わせ取りこぼしをゼロにする方法です。</p>
+
+  <div class="cta">
+    <h3>無料モニター募集中（先着1社限定）</h3>
+    <p>自動見積もり＋LINE通知の仕組みを、先着1社限定で無料で構築します。</p>
+    <a href="../index.html">無料相談はこちら</a>
+  </div>
+</div>
+</body>
+</html>

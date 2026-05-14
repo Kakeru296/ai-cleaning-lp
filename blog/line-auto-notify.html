@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINEに自動通知が届く！サービス業の問い合わせ対応を自動化する方法</title>
+<meta name="description" content="お客様からの問い合わせがあったら社長のLINEに即通知する仕組みの作り方。ハウスクリーニング・リフォーム・便利屋など小規模サービス業向けに解説。">
+<link rel="canonical" href="https://kakeru296.github.io/ai-cleaning-lp/blog/line-auto-notify.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGXL8YP9MT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XGXL8YP9MT');</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Sans','Meiryo',sans-serif; color: #1a1a2e; background: #fff; line-height: 1.8; }
+.header { background: #1a1a2e; color: white; padding: 16px 24px; }
+.header a { color: #ffd700; text-decoration: none; font-size: 14px; }
+.container { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 26px; line-height: 1.5; margin-bottom: 16px; }
+h2 { font-size: 20px; margin: 40px 0 16px; padding-left: 12px; border-left: 4px solid #e65100; }
+h3 { font-size: 17px; margin: 28px 0 10px; color: #333; }
+p { margin-bottom: 16px; color: #333; }
+.meta { font-size: 13px; color: #888; margin-bottom: 32px; }
+.highlight { background: #fff8e1; border-left: 4px solid #ffd700; padding: 16px 20px; margin: 24px 0; border-radius: 4px; }
+.cta { background: linear-gradient(135deg, #e65100, #ff6f00); color: white; text-align: center; padding: 32px 24px; border-radius: 12px; margin-top: 48px; }
+.cta h3 { color: white; margin: 0 0 12px; font-size: 20px; }
+.cta a { display: inline-block; background: white; color: #e65100; font-weight: 700; padding: 14px 36px; border-radius: 50px; text-decoration: none; margin-top: 16px; font-size: 16px; }
+.flow { background: #f8f9fa; border-radius: 8px; padding: 20px 24px; margin: 20px 0; }
+.flow-step { display: flex; align-items: flex-start; margin-bottom: 14px; }
+.flow-num { background: #e65100; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; margin-right: 12px; margin-top: 2px; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
+li { margin-bottom: 8px; color: #333; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+th, td { padding: 10px 14px; border: 1px solid #ddd; font-size: 14px; }
+th { background: #f5f5f5; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="header"><a href="../index.html">← トップページへ戻る</a></div>
+<div class="container">
+  <p class="meta">2025年5月 | Kakeru｜問合わせを逃さない仕組み屋</p>
+  <h1>LINEに自動通知が届く！サービス業の問い合わせ対応を自動化する方法</h1>
+
+  <div class="highlight">
+    <strong>この記事でわかること</strong><br>
+    ・LINE自動通知の仕組みと効果<br>
+    ・どんな業種に向いているか<br>
+    ・費用をかけずに始める方法
+  </div>
+
+  <h2>「問い合わせに気づくのが遅い」問題</h2>
+  <p>Webフォームやメールで受け付けている場合、パソコンを開いたときに気づくパターンがほとんどです。夜間・週末は翌営業日まで気づかないことも珍しくありません。お客様が問い合わせして返信が遅ければ、その間に競合他社を選んでいます。これを解決するのが「LINE自動通知」です。</p>
+
+  <h2>LINE自動通知の仕組み</h2>
+  <p>お客様がWebフォームに入力して送信した瞬間、社長のLINEにメッセージが届きます。通知内容に「名前・電話番号・希望内容・見積もり金額」が含まれているため、すぐに折り返し電話できます。</p>
+
+  <div class="flow">
+    <div class="flow-step"><div class="flow-num">1</div><div>お客様がスマホでフォームに入力・送信（夜間・休日でもOK）</div></div>
+    <div class="flow-step"><div class="flow-num">2</div><div>サーバーが自動で情報を整理してLINE APIに送信</div></div>
+    <div class="flow-step"><div class="flow-num">3</div><div>社長のLINEに「新規問い合わせ」の通知が届く</div></div>
+    <div class="flow-step"><div class="flow-num">4</div><div>すぐに折り返し電話 → 競合より先に動ける</div></div>
+  </div>
+
+  <h2>どんな業種に効果があるか</h2>
+  <p>「現場仕事が中心で事務所にいない」業種に特に効果があります。</p>
+  <ul>
+    <li>ハウスクリーニング・清掃業</li>
+    <li>リフォーム・内装工事業</li>
+    <li>便利屋・ハウスメンテナンス</li>
+    <li>害虫・害獣駆除業</li>
+    <li>引越し業・不用品回収</li>
+    <li>ネイルサロン・まつ毛サロン</li>
+  </ul>
+
+  <h2>通知に含めると便利な情報</h2>
+  <ul>
+    <li>お客様の氏名・電話番号</li>
+    <li>サービス内容・対象箇所</li>
+    <li>自動計算された見積もり金額</li>
+    <li>希望日時</li>
+    <li>問い合わせ元（Web・SNS・チラシQRなど）</li>
+  </ul>
+
+  <h2>費用をかけずに始める方法</h2>
+
+  <h3>LINE Messaging API（無料枠）</h3>
+  <p>月1,000件まで無料でメッセージを送れます。清掃会社の問い合わせ数では無料枠で十分なケースがほとんどです。</p>
+
+  <h3>Make.com との組み合わせ</h3>
+  <p>ノーコード自動化ツールのMake.comを使うと「フォーム送信 → LINE通知」をコードなしで設定できます。無料プランで月1,000回まで動作します。</p>
+
+  <table>
+    <tr><th>ツール</th><th>費用</th><th>月間件数</th></tr>
+    <tr><td>LINE Messaging API</td><td>無料</td><td>1,000件まで</td></tr>
+    <tr><td>Make.com</td><td>無料〜</td><td>1,000回まで</td></tr>
+    <tr><td>Webフォーム（自作）</td><td>無料</td><td>無制限</td></tr>
+  </table>
+
+  <h2>よくあるつまずきポイント</h2>
+  <ul>
+    <li><strong>LINEチャンネルのWebhook URL設定漏れ：</strong>最もよくあるミス</li>
+    <li><strong>Make.comのシナリオ自動停止：</strong>無料枠の上限に達すると止まる</li>
+    <li><strong>フィールド名の不一致：</strong>フォームの変数名とMake.comの変数名がずれると送信されない</li>
+  </ul>
+  <p>設定のつまずきを避けたい場合は、専門家に依頼するのが確実です。一度動き出せば、あとは自動で動き続けます。</p>
+
+  <h2>まとめ</h2>
+  <p>LINE自動通知を設定すれば夜間・休日の問い合わせにも即座に気づけます。ツールはすべて無料枠で始められるため、ランニングコストはほぼゼロ。現場仕事が中心で「常にパソコンの前にいられない」サービス業の方に最も効果の大きい仕組みです。</p>
+
+  <div class="cta">
+    <h3>無料モニター募集中（先着1社限定）</h3>
+    <p>自動見積もり＋LINE通知の仕組みを、先着1社限定で無料で構築します。<br>設定は全部こちらでやります。</p>
+    <a href="../index.html">詳しくはこちら</a>
+  </div>
+</div>
+</body>
+</html>
