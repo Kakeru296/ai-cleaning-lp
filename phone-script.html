@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>電話スクリプト | 清掃会社向け</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hiragino Sans', sans-serif; background: #f5f7fa; color: #1a1a2e; padding: 20px; max-width: 800px; margin: 0 auto; }
+  h1 { color: #0a1628; margin-bottom: 20px; font-size: 22px; }
+  .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 8px; }
+  .script { font-size: 17px; line-height: 1.8; color: #1a1a2e; }
+  .highlight { background: #fff3cd; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+  .step { display: flex; gap: 12px; margin-bottom: 20px; }
+  .step-num { width: 32px; height: 32px; border-radius: 50%; background: #0a1628; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 14px; }
+  .step-content { flex: 1; }
+  .step-title { font-weight: 700; color: #0a1628; margin-bottom: 6px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .result-yes { border-left: 4px solid #28a745; padding-left: 16px; margin-top: 16px; }
+  .result-no { border-left: 4px solid #dc3545; padding-left: 16px; margin-top: 16px; }
+  .result-maybe { border-left: 4px solid #ffc107; padding-left: 16px; margin-top: 16px; }
+  .tag { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .tag-yes { background: #d4edda; color: #155724; }
+  .tag-no { background: #f8d7da; color: #721c24; }
+  .tag-maybe { background: #fff3cd; color: #856404; }
+  .timer { background: #0a1628; color: #00c8ff; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; display: inline-block; margin-bottom: 20px; }
+  .demo-url { background: #e8f4fd; border: 1px solid #00c8ff; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 13px; word-break: break-all; margin-top: 8px; }
+  .objection { background: #fff8e1; border-radius: 8px; padding: 14px; margin-top: 12px; }
+  .objection-q { font-weight: 700; color: #e65100; margin-bottom: 6px; }
+  h2 { font-size: 16px; color: #0a1628; margin-bottom: 16px; border-bottom: 2px solid #00c8ff; padding-bottom: 8px; }
+  .progress-bar { display: flex; gap: 4px; margin-top: 10px; flex-wrap: wrap; }
+  .progress-slot { width: 44px; height: 44px; border-radius: 8px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; transition: all 0.2s; font-weight: 700; }
+  .progress-slot.called { background: #28a745; color: white; }
+  .progress-slot.interested { background: #00c8ff; color: white; }
+  .progress-slot.passed { background: #dc3545; color: white; }
+</style>
+</head>
+<body>
+
+<h1>📞 清掃会社向け 電話スクリプト</h1>
+
+<div class="card">
+  <div class="label">本日の目標</div>
+  <div style="font-size:15px; line-height:1.8; margin-top:4px;">
+    電話: <strong>10〜15社</strong> → 期待: <strong>1〜3社が「デモ見たい」</strong><br>
+    今週中に: <span class="highlight">1社をモニター候補として確定</span>
+  </div>
+</div>
+
+<div class="card">
+  <h2>📋 基本スクリプト（約60秒）</h2>
+  <div class="timer">⏱ 目安: 60秒以内</div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">つかみ（10秒）</div>
+      <div class="script">
+        「もしもし、突然お電話してすみません。<br>
+        清掃業専門でAI自動化を作っている<span class="highlight">Kakeruと申します</span>。<br>
+        30秒だけよろしいでしょうか？」
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">課題を刺す（20秒）</div>
+      <div class="script">
+        「夜中や休日に見積もりの問い合わせが来たとき、<br>
+        <span class="highlight">対応できなくて機会を逃してしまう</span>ことはありませんか？<br><br>
+        お客様がスマホで間取りと汚れを選ぶだけで<br>
+        自動で金額が出て、社長さんのLINEに通知が届きます。」
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">無料オファー（20秒）</div>
+      <div class="script">
+        「今ちょうど<span class="highlight">1社だけ無料でモニター</span>をお願いしたくて、<br>
+        御社のエリアにまだ他の方が入っていないので<br>
+        ご連絡しました。<br>
+        30秒で動くデモを見ていただけますか？」
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">クロージング（10秒）</div>
+      <div class="script">
+        「<span class="highlight">合わなければそれで全然構いません</span>。<br>
+        LINEかメールでURLをお送りしていいですか？」
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>💬 返答別 対応</h2>
+
+  <div class="result-yes">
+    <span class="tag tag-yes">✅ YES / 興味あり</span>
+    <div class="script">
+      「ありがとうございます！今すぐURLをお送りします。<br>
+      見ていただいたら一度お電話できますか？<br>
+      設定から稼働まで全部こちらでやります。」<br><br>
+      送るURL:
+      <div class="demo-url">https://kakeru296.github.io/ai-cleaning-lp/demo-cleaning.html</div>
+    </div>
+  </div>
+
+  <div class="result-maybe">
+    <span class="tag tag-maybe">🤔 検討 / 「資料送って」</span>
+    <div class="script">
+      「わかりました！LINEとメール、どちらが見やすいですか？<br>
+      <span class="highlight">30秒で全部わかるデモ</span>もついてます。<br>
+      来週また確認のお電話してもいいですか？」
+    </div>
+  </div>
+
+  <div class="result-no">
+    <span class="tag tag-no">❌ NO / 今は不要</span>
+    <div class="script">
+      「わかりました、お時間ありがとうございました。<br>
+      何かあればいつでもどうぞ。<br>
+      <span class="highlight">デモURLだけお送りしておきますね。</span>」<br>
+      <small>※断られてもURLは送る（種まき）</small>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🚧 よくある断り と 切り返し</h2>
+
+  <div class="objection">
+    <div class="objection-q">「今忙しい」</div>
+    「そうですよね！URLだけ送ります。LINEかメールどちらがいいですか？」
+  </div>
+  <div class="objection">
+    <div class="objection-q">「AIはよくわからない」</div>
+    「難しくないです。お客様がスマホで選ぶだけで動きます。デモを30秒見れば全部わかります。」
+  </div>
+  <div class="objection">
+    <div class="objection-q">「費用はいくら？」</div>
+    「今回は<span class="highlight">完全無料のモニター</span>なので費用ゼロです。まずデモを見てください。」
+  </div>
+  <div class="objection">
+    <div class="objection-q">「間に合ってる」「他でやってる」</div>
+    「そうですか！よかったです。もし夜間問い合わせで困ることがあればいつでも。URLだけ送りますね。」
+  </div>
+</div>
+
+<div class="card">
+  <h2>📊 今日の進捗（クリックで状態変更）</h2>
+  <div style="font-size:13px; color:#666; margin-bottom:4px;">⬜ 未 → 🟩 電話済み → 🔵 興味あり → 🔴 断り</div>
+  <div class="progress-bar" id="tracker"></div>
+  <div id="summary" style="margin-top:12px; font-size:14px; font-weight:700;"></div>
+</div>
+
+<script>
+const states = ['empty', 'called', 'interested', 'passed'];
+const labels = { empty: '　', called: '📞', interested: '⭐', passed: '✕' };
+const stored = JSON.parse(localStorage.getItem('phoneProgress2') || '[]');
+const tracker = document.getElementById('tracker');
+
+function updateSummary() {
+  const counts = { called: 0, interested: 0, passed: 0 };
+  stored.forEach(s => { if (counts[s] !== undefined) counts[s]++; });
+  document.getElementById('summary').textContent =
+    `電話済: ${counts.called + counts.interested + counts.passed}社 | 興味あり: ${counts.interested}社 | 断り: ${counts.passed}社`;
+}
+
+for (let i = 0; i < 15; i++) {
+  const slot = document.createElement('div');
+  const state = stored[i] || 'empty';
+  slot.className = 'progress-slot ' + (state === 'empty' ? '' : state);
+  slot.textContent = labels[state] || (i + 1);
+  slot.title = `${i + 1}社目`;
+  slot.addEventListener('click', () => {
+    const cur = states.indexOf(stored[i] || 'empty');
+    stored[i] = states[(cur + 1) % states.length];
+    slot.className = 'progress-slot ' + (stored[i] === 'empty' ? '' : stored[i]);
+    slot.textContent = labels[stored[i]] || (i + 1);
+    localStorage.setItem('phoneProgress2', JSON.stringify(stored));
+    updateSummary();
+  });
+  tracker.appendChild(slot);
+}
+updateSummary();
+</script>
+</body>
+</html>

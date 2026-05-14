@@ -10,34 +10,31 @@ const fs = require('fs');
 const path = require('path');
 
 const MY_EMAIL = 'info.shopworld.team@gmail.com';
-const MY_NAME  = 'AI導入支援担当';
+const MY_NAME  = 'Kakeru（清掃AI自動化）';
 const LP_URL   = 'https://kakeru296.github.io/ai-cleaning-lp/';
 const DEMO_URL = 'https://kakeru296.github.io/ai-cleaning-lp/demo-cleaning.html';
 
 function buildMessage(companyName, area) {
   const areaShort = area
     .replace(/東京都|神奈川県|埼玉県|千葉県|大阪府|愛知県|福岡県|北海道|京都府|兵庫県|宮城県|広島県|静岡県|新潟県|茨城県|栃木県|群馬県|岡山県|熊本県|鹿児島県|沖縄県/g, '');
-  return `突然のご連絡失礼いたします。
+  return `突然失礼いたします。
 
-${companyName}様の${areaShort}でのご活躍をGoogleマップで拝見いたしました。
-清掃会社様専門でAI業務自動化のご支援をしております。
+清掃業専門でAI自動化を作っているKakeruと申します。
+${companyName}様のことをGoogleマップで拝見し、ご連絡しました。
 
-1点だけご確認ください。
-「夜中や休日の見積もり問い合わせ、取りこぼしていませんか？」
+今だけ、1社限定で無料モニターを受け付けています。
 
-お客様がスマホで間取りと汚れ具合を選ぶだけで自動見積もりが表示され、
-社長さんのLINE・メールに即通知が届く仕組みを作っています。
+仕組みはシンプルです。
+お客様がスマホで選ぶだけ → 金額が即表示 → 社長のLINEに通知
 
-▼ 30秒で動作確認できるデモ（返信不要）
+▼ 30秒で動くデモはこちら（返信不要・押し付けなし）
 ${DEMO_URL}
 
-・24時間自動で見積もり受付（電話不要）
-・${areaShort}エリアは御社に独占保護（同業他社には販売しません）
-・最短2週間納品・初期費用75,000円〜
+夜間や休日の問い合わせを逃さなくなります。
+ご興味あればお気軽にどうぞ。
 
-詳細・お申し込み: ${LP_URL}
-
-ご不要の場合はそのままで構いません。`;
+Kakeru
+${LP_URL}`;
 }
 
 // 東京全23区 + 全国主要都市（60エリア）
