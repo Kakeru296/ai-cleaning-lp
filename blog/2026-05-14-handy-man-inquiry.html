@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>便利屋の問い合わせフォーム作り方｜集客を増やす3つのコツ</title>
+<meta name="description" content="便利屋の問い合わせフォーム作り方を解説。集客率を30%向上させる設計ポイントと、無料ツールを使った実装手順を紹介します。">
+<link rel="canonical" href="https://kakeru296.github.io/ai-cleaning-lp/blog/2026-05-14-handy-man-inquiry.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGXL8YP9MT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XGXL8YP9MT');</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Sans','Meiryo',sans-serif; color: #1a1a2e; background: #fff; line-height: 1.8; }
+.header { background: #1a1a2e; color: white; padding: 16px 24px; }
+.header a { color: #ffd700; text-decoration: none; font-size: 14px; }
+.container { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 26px; line-height: 1.5; margin-bottom: 16px; }
+h2 { font-size: 20px; margin: 40px 0 16px; padding-left: 12px; border-left: 4px solid #e65100; }
+h3 { font-size: 17px; margin: 28px 0 10px; color: #333; }
+p { margin-bottom: 16px; color: #333; }
+.meta { font-size: 13px; color: #888; margin-bottom: 32px; }
+.highlight { background: #fff8e1; border-left: 4px solid #ffd700; padding: 16px 20px; margin: 24px 0; border-radius: 4px; }
+.cta { background: linear-gradient(135deg, #e65100, #ff6f00); color: white; text-align: center; padding: 32px 24px; border-radius: 12px; margin-top: 48px; }
+.cta h3 { color: white; margin: 0 0 12px; font-size: 20px; }
+.cta a { display: inline-block; background: white; color: #e65100; font-weight: 700; padding: 14px 36px; border-radius: 50px; text-decoration: none; margin-top: 16px; font-size: 16px; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
+li { margin-bottom: 8px; color: #333; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+th, td { padding: 10px 14px; border: 1px solid #ddd; font-size: 14px; }
+th { background: #f5f5f5; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="header"><a href="../index.html">← トップページへ戻る</a></div>
+<div class="container">
+  <p class="meta">2026-05-14 | Kakeru｜問合わせを逃さない仕組み屋</p>
+  <h1>便利屋の問い合わせフォーム作り方｜集客を増やす3つのコツ</h1>
+<div class="highlight"><strong>この記事でわかること</strong><br>・問い合わせフォームが集客に与える影響<br>・効果的なフォーム設計の3つの要素<br>・無料ツールを使った実装手順</div>
+
+<h2>便利屋にとって問い合わせフォームが重要な理由</h2>
+<p>便利屋のビジネスは信頼が最重要です。問い合わせフォームは、見込み客があなたのサービスに関心を持ったときの「最後の一歩」になります。</p>
+<p>業界データによると、問い合わせフォームがない企業と比べ、フォームを設置している企業の問い合わせ数は平均26%増加しています。さらに、フォームの使いやすさが高いと、成約率は30%以上向上するという調査結果もあります。</p>
+<p>便利屋の場合、電話が苦手な顧客層や夜間に問い合わせしたい人など、多様なニーズに対応できるフォームが不可欠です。</p>
+
+<h2>効果的な問い合わせフォームの3つの設計ポイント</h2>
+<h3>1. 入力項目を最小限に絞る</h3>
+<p>問い合わせフォームの離脱率を下げるには、入力項目の削減が最優先です。必須項目は以下の5つに限定しましょう：</p>
+<ul>
+<li>名前</li>
+<li>電話番号</li>
+<li>メールアドレス</li>
+<li>依頼内容（選択式）</li>
+<li>詳細説明（自由記述）</li>
+</ul>
+<p>データ分析では、入力項目が7個以上になると離脱率が50%を超えます。</p>
+
+<h3>2. 依頼内容をカテゴリ化する</h3>
+<p>「何をお困りですか？」という項目を選択式にすることで、三つのメリットが生まれます。顧客の手間が減り、あなたも対応内容を即座に把握でき、見積もり対応が高速化します。</p>
+<p>便利屋なら以下のような分類がおすすめです：</p>
+<ul>
+<li>不用品回収</li>
+<li>大型家具の運搬・設置</li>
+<li>室内清掃</li>
+<li>庭木の手入れ</li>
+<li>その他</li>
+</ul>
+
+<h3>3. 送信完了画面と自動返信メールを設置</h3>
+<p>問い合わせ送信後、「送信が完了しました」という確認画面を表示することで、顧客の不安を解消します。同時に自動返信メールを送ることで、あなたがメッセージを受け取ったことを証明できます。返信までの目安時間（例：「2営業日以内にご連絡します」）を明記すると、信頼度が向上します。</p>
+
+<h2>無料ツールを使った実装手順</h2>
+<h3>Google フォームを使う場合</h3>
+<p><strong>ステップ1：フォームを作成</strong><br>Google アカウントにログイン後、Google フォーム（forms.google.com）にアクセスし、「新しいフォームを作成」をクリック。</p>
+<p><strong>ステップ2：項目を追加</strong><br>質問を追加して、前述の5つの項目を設定します。依頼内容は「ラジオボタン」または「プルダウン」で選択式に設定。</p>
+<p><strong>ステップ3：Webサイトに埋め込む</strong><br>フォーム完成後、「送信」ボタンから「埋め込む」を選択し、生成されたコードをあなたのWebサイトにコピー＆ペーストします。</p>
+
+<h3>フォームスプレッドの場合</h3>
+<p>より高機能が必要な場合は、FormSprree（formspr.ee）やWufoo（wufoo.com）の無料プランを検討しましょう。これらは自動返信メール機能が標準装備されています。</p>
+
+<h2>まとめ</h2>
+<p>便利屋の問い合わせフォームは、単なる連絡手段ではなく、顧客信頼を構築する営業ツールです。入力項目の最小化、カテゴリ化、確認メール送信の3つを実装すれば、問い合わせ数と成約率の両方を向上させられます。</p>
+<p>Google フォームなら5分で導入できます。今すぐ設置して、見込み客を逃さないビジネス環境を整えましょう。</p>
+  <div class="cta">
+    <h3>無料モニター募集中（先着1社限定）</h3>
+    <p>自動見積もり＋LINE通知の仕組みを、先着1社限定で無料で構築します。</p>
+    <a href="../index.html">詳しくはこちら</a>
+  </div>
+</div>
+</body>
+</html>

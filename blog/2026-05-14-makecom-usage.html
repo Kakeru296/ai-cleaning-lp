@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Make.com 使い方入門｜日本語で学ぶ業務自動化ガイド</title>
+<meta name="description" content="Make.com の使い方を日本語で解説。サービス業経営者向けに、基本設定から実践的な自動化シナリオまで、初心者向けステップバイステップガイドです。">
+<link rel="canonical" href="https://kakeru296.github.io/ai-cleaning-lp/blog/2026-05-14-makecom-usage.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGXL8YP9MT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XGXL8YP9MT');</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Sans','Meiryo',sans-serif; color: #1a1a2e; background: #fff; line-height: 1.8; }
+.header { background: #1a1a2e; color: white; padding: 16px 24px; }
+.header a { color: #ffd700; text-decoration: none; font-size: 14px; }
+.container { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 26px; line-height: 1.5; margin-bottom: 16px; }
+h2 { font-size: 20px; margin: 40px 0 16px; padding-left: 12px; border-left: 4px solid #e65100; }
+h3 { font-size: 17px; margin: 28px 0 10px; color: #333; }
+p { margin-bottom: 16px; color: #333; }
+.meta { font-size: 13px; color: #888; margin-bottom: 32px; }
+.highlight { background: #fff8e1; border-left: 4px solid #ffd700; padding: 16px 20px; margin: 24px 0; border-radius: 4px; }
+.cta { background: linear-gradient(135deg, #e65100, #ff6f00); color: white; text-align: center; padding: 32px 24px; border-radius: 12px; margin-top: 48px; }
+.cta h3 { color: white; margin: 0 0 12px; font-size: 20px; }
+.cta a { display: inline-block; background: white; color: #e65100; font-weight: 700; padding: 14px 36px; border-radius: 50px; text-decoration: none; margin-top: 16px; font-size: 16px; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
+li { margin-bottom: 8px; color: #333; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+th, td { padding: 10px 14px; border: 1px solid #ddd; font-size: 14px; }
+th { background: #f5f5f5; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="header"><a href="../index.html">← トップページへ戻る</a></div>
+<div class="container">
+  <p class="meta">2026-05-14 | Kakeru｜問合わせを逃さない仕組み屋</p>
+  <h1>Make.com 使い方入門｜日本語で学ぶ業務自動化ガイド</h1>
+<div class="highlight"><strong>この記事でわかること</strong><br>・Make.com の基本的な概念と初期設定方法<br>・業務効率化に役立つシナリオ構築の手順<br>・日本語サポートと実用的なテンプレート活用法</div>
+
+<h2>Make.com とは｜サービス業の業務自動化ツール</h2>
+<p>Make.com（旧Integromat）は、複数のアプリやサービスを連携させて業務を自動化するノーコードプラットフォームです。サービス業では、予約管理システムとメール送信、顧客管理ツールと請求書作成など、日々の反復作業を大幅に削減できます。</p>
+<p>月間最大1万件のオペレーション（処理）が可能な無料プランから始められるため、導入コストの心配がありません。日本語対応も進み、初心者でも比較的簡単に使い始められるようになっています。</p>
+
+<h2>Make.com の初期設定｜日本語で始めるステップ</h2>
+<p><strong>ステップ1：アカウント作成</strong><br>
+Make.com 公式サイトにアクセスし、メールアドレスとパスワードで登録します。日本語表示は、ダッシュボード右上の言語設定から「日本語」を選択することで対応可能です。認証メールを確認し、メールアドレスを認証すれば準備完了です。</p>
+<p><strong>ステップ2：初めてのシナリオ作成</strong><br>
+ダッシュボードから「新しいシナリオを作成」を選択します。最初は単純な例から始めるのがおすすめです。例えば、「Googleフォーム送信」→「Gmailで通知」という2ステップの流れを構築することで、基本操作を習得できます。</p>
+<p><strong>ステップ3：アプリの接続</strong><br>
+各アプリとの接続には、API認証が必要な場合があります。Gmail、Google Sheets、Slack など主要なサービスは、アカウント認証を進めるだけで連携できます。初回接続時に「Make.com アプリにアクセスを許可する」というダイアログが表示されるため、指示に従い進めましょう。</p>
+
+<h2>サービス業で使える自動化シナリオの実践例</h2>
+<p><strong>予約完了後の自動メール送信</strong><br>
+顧客が予約システムから申し込むと、自動で確認メールと請求書がメールされる流れを構築できます。このシナリオにより、メール送信作業に費やしていた約30分/日の工数を削減できた企業も多くあります。</p>
+<p><strong>顧客情報の自動集約</strong><br>
+Google Formsで集めた顧客情報を、自動でGoogle Sheetsやスプレッドシートに記録する仕組みを作成。データの二重入力を避けられ、データベース管理が効率化されます。</p>
+<p><strong>スタッフのシフト管理自動化</strong><br>
+Google Calendarの予定変更を監視し、変更があれば即座にSlackで全スタッフに通知するシナリオも実装可能です。情報伝達の遅れを防ぎ、業務品質を向上させます。</p>
+
+<h2>日本語ドキュメントとテンプレートの活用</h2>
+<p>Make.com は日本語サポートサイトを提供しており、基本的な使い方から応用まで学べます。また、コミュニティフォーラムには日本語のテンプレートや実装例が多数共有されています。</p>
+<p>ダッシュボードの「テンプレート」セクションから、業種別・用途別のテンプレートを選択することで、ゼロからシナリオを構築するよりも時間を短縮できます。これらのテンプレートをベースにカスタマイズすることが、効率的な学習方法です。</p>
+
+<h2>まとめ</h2>
+<p>Make.com は、サービス業の経営者が業務自動化を実現するための強力なツールです。初期設定と基本操作さえ理解すれば、複雑なプログラミング知識がなくても実践的な自動化を構築できます。月間1万件までの処理であれば無料で利用できるため、まずは小さなシナリオから始めて、段階的に活用範囲を拡大していくことをお勧めします。日本語ドキュメントの充実により、習得難易度も大幅に低下しています。まずは試してみることから、業務効率化の第一歩を踏み出しましょう。</p>
+  <div class="cta">
+    <h3>無料モニター募集中（先着1社限定）</h3>
+    <p>自動見積もり＋LINE通知の仕組みを、先着1社限定で無料で構築します。</p>
+    <a href="../index.html">詳しくはこちら</a>
+  </div>
+</div>
+</body>
+</html>
