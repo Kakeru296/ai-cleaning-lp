@@ -27,7 +27,8 @@ jobs:
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         run: node seo/collect-gsc-data.js || echo "GSCスキップ"
 
-      - name: 週次レポートをLINEに送信
+      - name: 週次レポートをメール送信
         env:
-          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
         run: node seo/weekly-report.js

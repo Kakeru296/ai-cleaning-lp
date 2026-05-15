@@ -1,9 +1,9 @@
 'use strict';
 
-// 毎日10:00 JST: 今日の記事数通知 + アウトリーチリマインダーをLINEに送信
+// 毎日10:00 JST: 今日の記事数通知 + アウトリーチリマインダーをメールで送信
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
+const nodemailer = require('nodemailer');
 
 const BLOG_DIR = path.join(__dirname, '..', 'blog');
 
@@ -29,55 +29,44 @@ function todayTarget() {
   };
 }
 
-function sendLine(token, message) {
-  const body = 'message=' + encodeURIComponent(message);
-  return new Promise((resolve, reject) => {
-    const req = https.request({
-      hostname: 'notify-api.line.me',
-      path: '/api/notify',
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(body)
-      }
-    }, res => {
-      let d = '';
-      res.on('data', c => d += c);
-      res.on('end', () => resolve(d));
-    });
-    req.on('error', reject);
-    req.write(body);
-    req.end();
+async function sendEmail(user, pass, subject, body) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass }
   });
+  await transporter.sendMail({ from: user, to: user, subject, text: body });
 }
 
 async function main() {
-  const token = process.env.LINE_NOTIFY_TOKEN;
-  if (!token) { console.log('LINE_NOTIFY_TOKEN 未設定'); return; }
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailPass = process.env.GMAIL_APP_PASS;
+  if (!gmailUser || !gmailPass) { console.log('GMAIL_USER/GMAIL_APP_PASS 未設定 → スキップ'); return; }
 
   const todayCount = countToday();
   const totalCount = countTotal();
   const { city, keyword } = todayTarget();
-  const date = new Date().toLocaleDateString('ja-JP', { month: 'long', day: 'numeric', weekday: 'short' });
+  const date = new Date().toISOString().split('T')[0];
 
-  let msg = `\n🌅 おはようございます！${date}\n`;
-  msg += `━━━━━━━━━━━━━━━\n`;
-  msg += `📝 今日の記事: ${todayCount}本\n`;
-  msg += `📚 累計: ${totalCount}本\n`;
-  msg += `\n📍 今日のアウトリーチ先\n`;
-  msg += `  「${keyword} ${city}」\n`;
-  msg += `\n✅ アクションリスト\n`;
-  msg += `  1⃣ Coconalaメッセージ確認\n`;
-  msg += `  2⃣ ${city}の${keyword}業者\n`;
-  msg += `     に電話 or DM\n`;
-  msg += `  3⃣ くらしのマーケットDM 5社\n`;
-  msg += `━━━━━━━━━━━━━━━\n`;
-  msg += `💰 目標: 今日1件問い合わせ獲得！`;
+  let body = `おはようございます！ ${date}\n`;
+  body += `${'─'.repeat(30)}\n`;
+  body += `今日の記事: ${todayCount}本生成\n`;
+  body += `累計: ${totalCount}本\n\n`;
+  body += `今日のアウトリーチ先\n`;
+  body += `  「${keyword} ${city}」\n\n`;
+  body += `アクションリスト\n`;
+  body += `  1. Coconalaメッセージ確認\n`;
+  body += `     https://coconala.com/mypage/dashboard\n`;
+  body += `  2. ${city}の${keyword}業者に電話 or DM\n`;
+  body += `     Googleマップ: https://maps.google.com/?q=${encodeURIComponent(keyword + ' ' + city)}\n`;
+  body += `  3. くらしのマーケットDM 5社\n`;
+  body += `     https://www.curama.jp/cleaning/list/\n\n`;
+  body += `${'─'.repeat(30)}\n`;
+  body += `目標: 今日1件問い合わせ獲得！\n`;
+  body += `LP: https://kakeru296.github.io/ai-cleaning-lp/\n`;
 
-  console.log(msg);
-  await sendLine(token, msg);
-  console.log('✓ 朝のリマインダー送信完了');
+  console.log(body);
+  await sendEmail(gmailUser, gmailPass, `【日次】${date} 記事${todayCount}本 / アウトリーチ: ${city}`, body);
+  console.log('✓ 朝のリマインダー送信完了 → ' + gmailUser);
 }
 
 main().catch(console.error);

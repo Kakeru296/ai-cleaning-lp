@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
+const nodemailer = require('nodemailer');
 
 const BLOG_DIR = path.join(__dirname, '..', 'blog');
 const STATE_FILE = path.join(__dirname, 'state.json');
@@ -23,42 +23,28 @@ function loadState() {
   return JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
 }
 
-function sendLine(token, message) {
-  const body = 'message=' + encodeURIComponent(message);
-  return new Promise((resolve, reject) => {
-    const req = https.request({
-      hostname: 'notify-api.line.me',
-      path: '/api/notify',
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(body)
-      }
-    }, res => {
-      let d = '';
-      res.on('data', c => d += c);
-      res.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve(d); } });
-    });
-    req.on('error', reject);
-    req.write(body);
-    req.end();
+async function sendEmail(user, pass, subject, body) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass }
   });
+  await transporter.sendMail({ from: user, to: user, subject, text: body });
 }
 
 async function main() {
-  const token = process.env.LINE_NOTIFY_TOKEN;
-  if (!token) { console.log('LINE_NOTIFY_TOKEN 未設定 → スキップ'); return; }
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailPass = process.env.GMAIL_APP_PASS;
+  if (!gmailUser || !gmailPass) { console.log('GMAIL_USER/GMAIL_APP_PASS 未設定 → スキップ'); return; }
 
   const state = loadState();
   const total = countArticles();
   const thisWeek = countThisWeek();
   const date = new Date().toISOString().split('T')[0];
 
-  let msg = `\n📊 週次レポート ${date}\n`;
-  msg += `━━━━━━━━━━━━━━━\n`;
-  msg += `📝 記事総数: ${total}本\n`;
-  msg += `📅 今週追加: ${thisWeek}本\n`;
+  let body = `週次ビジネスレポート ${date}\n`;
+  body += `${'─'.repeat(30)}\n`;
+  body += `ブログ記事総数: ${total}本\n`;
+  body += `今週追加: ${thisWeek}本\n`;
 
   const gsc = state.gsc;
   if (gsc && gsc.pages && gsc.pages.length > 0) {
@@ -66,30 +52,32 @@ async function main() {
     const imp = gsc.pages.reduce((s, p) => s + p.impressions, 0);
     const ctr = imp > 0 ? (clicks / imp * 100).toFixed(1) : 0;
     const pos = (gsc.pages.reduce((s, p) => s + p.position, 0) / gsc.pages.length).toFixed(1);
-    msg += `\n🔍 GSC（28日間）\n`;
-    msg += `  表示: ${imp.toLocaleString()}回\n`;
-    msg += `  クリック: ${clicks}回\n`;
-    msg += `  CTR: ${ctr}% / 平均順位: ${pos}位\n`;
+    body += `\nGSCデータ（28日間）\n`;
+    body += `  表示回数: ${imp.toLocaleString()}\n`;
+    body += `  クリック: ${clicks}\n`;
+    body += `  CTR: ${ctr}% / 平均順位: ${pos}位\n`;
+    body += `  インデックスページ数: ${gsc.pages.length}\n`;
 
-    const top = [...gsc.pages].sort((a, b) => b.clicks - a.clicks).slice(0, 3);
+    const top = [...gsc.pages].sort((a, b) => b.clicks - a.clicks).slice(0, 5);
     if (top.length) {
-      msg += `🏆 人気記事トップ3\n`;
+      body += `\n人気記事トップ5\n`;
       top.forEach((p, i) => {
-        const name = (p.url.split('/blog/')[1] || p.url).substring(0, 25);
-        msg += `  ${i + 1}. ${name} (${p.clicks}click)\n`;
+        const name = (p.url.split('/blog/')[1] || p.url).substring(0, 40);
+        body += `  ${i + 1}. ${name} (${p.clicks}click / imp${p.impressions})\n`;
       });
     }
   } else {
-    msg += `\n📊 GSC: データ蓄積中...\n`;
+    body += `\nGSC: データ蓄積中（インデックス後1〜4週で表示）\n`;
   }
 
-  msg += `━━━━━━━━━━━━━━━\n`;
-  msg += `✅ 毎朝25記事自動生成中\n`;
-  msg += `💡 今週のToDo: 電話orDM 10社`;
+  body += `\n${'─'.repeat(30)}\n`;
+  body += `毎朝25記事自動生成中\n`;
+  body += `今週のToDo: 電話orDM 10社\n`;
+  body += `LP: https://kakeru296.github.io/ai-cleaning-lp/\n`;
 
-  console.log(msg);
-  await sendLine(token, msg);
-  console.log('✓ LINE通知送信完了');
+  console.log(body);
+  await sendEmail(gmailUser, gmailPass, `【週次レポート】${date} 記事${total}本`, body);
+  console.log('✓ メール送信完了 → ' + gmailUser);
 }
 
 main().catch(console.error);
