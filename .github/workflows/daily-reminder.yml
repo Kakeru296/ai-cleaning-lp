@@ -1,0 +1,28 @@
+name: 日次アウトリーチリマインダー
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 毎日10:00 JST (UTC 01:00)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install
+
+      - name: 朝のリマインダー送信
+        env:
+          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+        run: node seo/daily-reminder.js

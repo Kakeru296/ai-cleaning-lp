@@ -1,0 +1,33 @@
+name: 週次ビジネスレポート
+
+on:
+  schedule:
+    - cron: '0 23 * * 0'  # 毎週月曜 08:00 JST (日曜 UTC 23:00)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install
+
+      - name: GSCデータ更新（任意）
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        run: node seo/collect-gsc-data.js || echo "GSCスキップ"
+
+      - name: 週次レポートをLINEに送信
+        env:
+          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+        run: node seo/weekly-report.js
