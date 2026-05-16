@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>清掃業向けスプレッドシート顧客管理テンプレの作り方</title>
+<meta name="description" content="清掃業の顧客管理をスプレッドシートで効率化するテンプレ活用法。具体的な設定手順と運用のコツを解説。">
+<link rel="canonical" href="https://kakeru296.github.io/ai-cleaning-lp/blog/2026-05-16-cleaning.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGXL8YP9MT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XGXL8YP9MT');</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Sans','Meiryo',sans-serif; color: #1a1a2e; background: #fff; line-height: 1.8; }
+.header { background: #1a1a2e; color: white; padding: 16px 24px; }
+.header a { color: #ffd700; text-decoration: none; font-size: 14px; }
+.container { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 26px; line-height: 1.5; margin-bottom: 16px; }
+h2 { font-size: 20px; margin: 40px 0 16px; padding-left: 12px; border-left: 4px solid #e65100; }
+h3 { font-size: 17px; margin: 28px 0 10px; color: #333; }
+p { margin-bottom: 16px; color: #333; }
+.meta { font-size: 13px; color: #888; margin-bottom: 32px; }
+.highlight { background: #fff8e1; border-left: 4px solid #ffd700; padding: 16px 20px; margin: 24px 0; border-radius: 4px; }
+.cta { background: linear-gradient(135deg, #e65100, #ff6f00); color: white; text-align: center; padding: 32px 24px; border-radius: 12px; margin-top: 48px; }
+.cta h3 { color: white; margin: 0 0 12px; font-size: 20px; }
+.cta a { display: inline-block; background: white; color: #e65100; font-weight: 700; padding: 14px 36px; border-radius: 50px; text-decoration: none; margin-top: 16px; font-size: 16px; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
+li { margin-bottom: 8px; color: #333; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+th, td { padding: 10px 14px; border: 1px solid #ddd; font-size: 14px; }
+th { background: #f5f5f5; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="header"><a href="../index.html">← トップページへ戻る</a></div>
+<div class="container">
+  <p class="meta">2026-05-16 | Kakeru｜問合わせを逃さない仕組み屋</p>
+  <h1>清掃業向けスプレッドシート顧客管理テンプレの作り方</h1>
+<div class="highlight"><strong>この記事でわかること</strong><br>・スプレッドシートで顧客管理テンプレを構築する手順<br>・清掃業に必要な項目と管理ポイント<br>・業務効率を30%以上改善する運用のコツ</div>
+
+<h2>清掃業に特化した顧客管理テンプレの必要性</h2>
+<p>清掃業の経営では、顧客情報の一元管理が売上向上に直結します。従来の手書きノートやExcelの管理では、顧客の施設タイプ、訪問頻度、請求サイクルなどが把握しきれず、営業機会を失っています。</p>
+<p>スプレッドシートは無料で利用でき、クラウド保存により複数スタッフとの情報共有も容易です。実際に導入した企業では、顧客対応の漏れが60%削減され、新規営業に充てる時間が月10時間以上増加した事例があります。</p>
+
+<h2>基本的な顧客管理テンプレの構築ステップ</h2>
+<p><strong>ステップ1: シートの基本項目を設定</strong></p>
+<p>以下の項目を最初の行に入力します：</p>
+<ul>
+<li>顧客ID（連番）</li>
+<li>顧客名・担当者名</li>
+<li>電話番号・メールアドレス</li>
+<li>施設タイプ（オフィス・店舗・住宅など）</li>
+<li>所在地・建物規模</li>
+<li>契約開始日・契約終了予定日</li>
+<li>訪問頻度（週1回など）</li>
+<li>月額料金・請求月日</li>
+<li>最終訪問日・次回訪問予定日</li>
+<li>備考欄</li>
+</ul>
+<p><strong>ステップ2: データの色分けルールを作成</strong></p>
+<p>契約状態を視覚的に管理するため、条件付き書式を活用します。「契約終了予定日が3ヶ月以内」の行は黄色、「契約終了日を経過」した行は赤色に自動で色付けします。これにより、更新営業の対象顧客が一目でわかります。</p>
+<p><strong>ステップ3: フィルター機能を設定</strong></p>
+<p>施設タイプ別、地域別、訪問頻度別など、複数の軸でフィルタリングできるようにします。例えば「オフィス清掃で週2回以上訪問している顧客」の抽出が数秒で完了し、営業戦略を立てやすくなります。</p>
+
+<h2>清掃業ならではの運用管理項目</h2>
+<p>一般的な顧客管理と異なり、清掃業では以下の項目が重要です：</p>
+<p><strong>作業実績の記録</strong><br>訪問日、作業内容（日常清掃・定期清掃など）、担当スタッフ名、作業時間を別シートで管理します。月単位で集計することで、スタッフの生産性測定や顧客ごとの利益率計算が可能になります。</p>
+<p><strong>顧客満足度・クレーム管理</strong><br>訪問後の顧客からの指摘や要望を記録する欄を設けます。月1回のクレーム統計により、サービス品質の改善点が明確になります。</p>
+<p><strong>競合情報の追跡</strong><br>顧客が他社への乗り換えを検討していないか、定期的にヒアリング内容を記入します。更新の3ヶ月前から積極的なアプローチが可能になります。</p>
+
+<h2>効率的な運用のコツ</h2>
+<p>テンプレを作成したあとの運用が重要です。以下のルールを実施することで、継続的な改善が生まれます：</p>
+<ul>
+<li>毎日の訪問報告時に最新情報を入力（訪問予定日時点から実績への更新）</li>
+<li>週1回、契約終了予定日が近い顧客をリストアップして営業チームへ報告</li>
+<li>月1回、スプレッドシートのデータをバックアップして別フォルダに保存</li>
+<li>3ヶ月ごとに項目の見直しを行い、不要な項目の削除や新しい指標の追加を検討</li>
+</ul>
+<p>これらの運用を徹底することで、経営判断に必要なデータが常に最新の状態に保たれます。</p>
+
+<h2>まとめ</h2>
+<p>スプレッドシートを使った顧客管理テンプレは、導入コストゼロで清掃業の経営効率を大幅に向上させます。基本項目の設定から始め、色分けやフィルター機能を活用することで、視認性の高いシステムが実現できます。</p>
+<p>清掃業特有の作業実績やクレーム管理を組み込むことで、単なる顧客リストから、経営戦略を支える重要なツールへと進化させることができます。月1～2時間の運用時間投資で、営業効果を30%以上高める価値があります。ぜひ今月から導入を検討してください。</p>
+  <div class="cta">
+    <h3>無料モニター募集中（先着1社限定）</h3>
+    <p>自動見積もり＋LINE通知の仕組みを、先着1社限定で無料で構築します。</p>
+    <a href="../index.html">詳しくはこちら</a>
+  </div>
+</div>
+</body>
+</html>

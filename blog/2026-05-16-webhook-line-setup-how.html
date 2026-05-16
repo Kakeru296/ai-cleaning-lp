@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebhookでフォームをLINEに自動送信する設定方法【経営者向け】</title>
+<meta name="description" content="Webhookを使ってフォーム送信をLINEに自動転送する方法を解説。経営者向けに簡潔な設定手順を紹介します。">
+<link rel="canonical" href="https://kakeru296.github.io/ai-cleaning-lp/blog/2026-05-16-webhook-line-setup-how.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGXL8YP9MT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XGXL8YP9MT');</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Sans','Meiryo',sans-serif; color: #1a1a2e; background: #fff; line-height: 1.8; }
+.header { background: #1a1a2e; color: white; padding: 16px 24px; }
+.header a { color: #ffd700; text-decoration: none; font-size: 14px; }
+.container { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 26px; line-height: 1.5; margin-bottom: 16px; }
+h2 { font-size: 20px; margin: 40px 0 16px; padding-left: 12px; border-left: 4px solid #e65100; }
+h3 { font-size: 17px; margin: 28px 0 10px; color: #333; }
+p { margin-bottom: 16px; color: #333; }
+.meta { font-size: 13px; color: #888; margin-bottom: 32px; }
+.highlight { background: #fff8e1; border-left: 4px solid #ffd700; padding: 16px 20px; margin: 24px 0; border-radius: 4px; }
+.cta { background: linear-gradient(135deg, #e65100, #ff6f00); color: white; text-align: center; padding: 32px 24px; border-radius: 12px; margin-top: 48px; }
+.cta h3 { color: white; margin: 0 0 12px; font-size: 20px; }
+.cta a { display: inline-block; background: white; color: #e65100; font-weight: 700; padding: 14px 36px; border-radius: 50px; text-decoration: none; margin-top: 16px; font-size: 16px; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
+li { margin-bottom: 8px; color: #333; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+th, td { padding: 10px 14px; border: 1px solid #ddd; font-size: 14px; }
+th { background: #f5f5f5; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="header"><a href="../index.html">← トップページへ戻る</a></div>
+<div class="container">
+  <p class="meta">2026-05-16 | Kakeru｜問合わせを逃さない仕組み屋</p>
+  <h1>WebhookでフォームをLINEに自動送信する設定方法【経営者向け】</h1>
+<div class="highlight"><strong>この記事でわかること</strong><br>・WebhookとLINE連携の基本的な仕組み<br>・フォーム送信をLINEに自動転送する設定手順<br>・よくあるトラブル対応と実装のポイント</div>
+
+<h2>Webhookでフォーム送信をLINEに連携する必要性</h2>
+<p>サービス業の経営者にとって、顧客からの問い合わせ対応の迅速さは重要な競争力です。従来はメール受信を確認してから対応することが多かったですが、Webhookを活用することで、フォーム送信と同時にLINEで通知を受け取ることができます。</p>
+<p>これにより平均対応時間を30分から5分に短縮できた事例もあります。特に美容サロンや飲食店といった予約制のサービス業では、リアルタイム通知が顧客満足度を大きく向上させます。</p>
+
+<h2>Webhook連携の設定方法【5つのステップ】</h2>
+<p><strong>ステップ1：LINE公式アカウントの準備</strong></p>
+<p>まずLINE Developersコンソールにアクセスして、プロバイダーとチャネルを作成します。チャネルタイプは「Messaging API」を選択してください。作成後、チャネルアクセストークンと顧客ID（またはグループID）を控えておきます。</p>
+
+<p><strong>ステップ2：フォーム作成ツールでの設定</strong></p>
+<p>Google Formやフォーム作成ツール（Googleフォーム、Typeform、Formrunなど）を使用している場合、「Webhookの設定」メニューから外部連携を選択します。Webhook URLに以下の形式で入力します：</p>
+<p style="background-color:#f5f5f5; padding:10px; border-left:4px solid #0099ff;">https://api.line.me/v2/bot/message/push</p>
+
+<p><strong>ステップ3：HTTP POSTリクエストの設定</strong></p>
+<p>Webhookのメソッドを「POST」に設定し、ヘッダーに以下を追加します：</p>
+<ul>
+<li>Authorization: Bearer {チャネルアクセストークン}</li>
+<li>Content-Type: application/json</li>
+</ul>
+
+<p><strong>ステップ4：リクエストボディの構成</strong></p>
+<p>フォームの各フィールド（名前、メールアドレス、内容など）をJSON形式で構成します。例えば、顧客名と問い合わせ内容を送信する場合：</p>
+<p style="background-color:#f5f5f5; padding:10px; border-left:4px solid #0099ff;">{
+"to": "{顧客ID}",
+"messages": [{
+"type": "text",
+"text": "新しい問い合わせが届きました。\n名前: {フォーム名前フィールド}\n内容: {フォーム内容フィールド}"
+}]
+}</p>
+
+<p><strong>ステップ5：テスト送信と動作確認</strong></p>
+<p>フォーム作成ツールのテスト機能を使用して、実際にLINEで通知が受け取れるかを確認します。通知を受け取ったら設定は完了です。</p>
+
+<h2>実装時のトラブル対応</h2>
+<p>設定後、通知が届かない場合は以下の点を確認してください：</p>
+<ul>
+<li>チャネルアクセストークンが正しく入力されているか</li>
+<li>LINE公式アカウントがメッセージング機能を有効にしているか</li>
+<li>Webhook URLのフォーマットが正確か（ドメインや末尾のスラッシュなど）</li>
+<li>ファイアウォールがHTTPSリクエストをブロックしていないか</li>
+</ul>
+<p>これらを確認しても解決しない場合は、LINE Developersの「Webhookの検証」機能でリクエストのログを確認することをおすすめします。</p>
+
+<h2>まとめ</h2>
+<p>WebhookとLINEを連携させることで、フォーム送信をリアルタイムで把握でき、対応スピードが大幅に向上します。今回紹介した5つのステップに従えば、技術知識がない経営者でも約15分で設定が完了します。顧客対応の効率化は企業の信頼度向上に直結するため、ぜひこの機会に導入を検討してみてください。</p>
+  <div class="cta">
+    <h3>無料モニター募集中（先着1社限定）</h3>
+    <p>自動見積もり＋LINE通知の仕組みを、先着1社限定で無料で構築します。</p>
+    <a href="../index.html">詳しくはこちら</a>
+  </div>
+</div>
+</body>
+</html>

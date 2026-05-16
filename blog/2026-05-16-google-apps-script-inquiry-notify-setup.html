@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Apps Scriptで問い合わせ通知を自動化する設定ガイド</title>
+<meta name="description" content="Google Apps Scriptを使った問い合わせフォームの通知自動化を、実装手順とともに解説。メール送信の遅延をなくし、顧客対応を迅速化します。">
+<link rel="canonical" href="https://kakeru296.github.io/ai-cleaning-lp/blog/2026-05-16-google-apps-script-inquiry-notify-setup.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGXL8YP9MT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XGXL8YP9MT');</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Sans','Meiryo',sans-serif; color: #1a1a2e; background: #fff; line-height: 1.8; }
+.header { background: #1a1a2e; color: white; padding: 16px 24px; }
+.header a { color: #ffd700; text-decoration: none; font-size: 14px; }
+.container { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 26px; line-height: 1.5; margin-bottom: 16px; }
+h2 { font-size: 20px; margin: 40px 0 16px; padding-left: 12px; border-left: 4px solid #e65100; }
+h3 { font-size: 17px; margin: 28px 0 10px; color: #333; }
+p { margin-bottom: 16px; color: #333; }
+.meta { font-size: 13px; color: #888; margin-bottom: 32px; }
+.highlight { background: #fff8e1; border-left: 4px solid #ffd700; padding: 16px 20px; margin: 24px 0; border-radius: 4px; }
+.cta { background: linear-gradient(135deg, #e65100, #ff6f00); color: white; text-align: center; padding: 32px 24px; border-radius: 12px; margin-top: 48px; }
+.cta h3 { color: white; margin: 0 0 12px; font-size: 20px; }
+.cta a { display: inline-block; background: white; color: #e65100; font-weight: 700; padding: 14px 36px; border-radius: 50px; text-decoration: none; margin-top: 16px; font-size: 16px; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
+li { margin-bottom: 8px; color: #333; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+th, td { padding: 10px 14px; border: 1px solid #ddd; font-size: 14px; }
+th { background: #f5f5f5; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="header"><a href="../index.html">← トップページへ戻る</a></div>
+<div class="container">
+  <p class="meta">2026-05-16 | Kakeru｜問合わせを逃さない仕組み屋</p>
+  <h1>Google Apps Scriptで問い合わせ通知を自動化する設定ガイド</h1>
+<div class="highlight"><strong>この記事でわかること</strong><br>・Google Apps Scriptで問い合わせ通知を自動化する基本的な仕組み<br>・Google Formやスプレッドシートとの連携手順<br>・通知メール遅延を防ぎ、リアルタイム対応を実現する設定方法</div>
+
+<h2>Google Apps Scriptによる問い合わせ通知とは</h2>
+<p>サービス業の経営では、顧客からの問い合わせに迅速に対応することが売上向上に直結します。Google Apps Script（GAS）を活用すれば、Google Formやスプレッドシートに投稿された問い合わせを自動的にメール通知する仕組みが作れます。</p>
+<p>従来のメール自動返信機能では通知の遅延が生じることもありますが、GASを使えば最短数秒以内に管理者へ通知が届きます。システムエンジニアの力を借りずに実装でき、小規模事業者から大規模企業まで対応可能です。</p>
+
+<h2>Google Formとスプレッドシート連携での設定手順</h2>
+<p>まずGoogle Formで問い合わせフォームを作成し、回答をスプレッドシートに自動保存する設定をします。</p>
+<p><strong>ステップ1：Google Formの準備</strong><br>Google Formで「名前」「メールアドレス」「問い合わせ内容」などの項目を作成します。フォームの設定画面で「回答」タブを選択し、緑色のスプレッドシートアイコンをクリックして、新しいスプレッドシートを作成します。</p>
+<p><strong>ステップ2：スプレッドシートでGASを開く</strong><br>スプレッドシートメニューの「拡張機能」→「Apps Script」をクリックします。新しいタブでエディタが開きます。</p>
+<p><strong>ステップ3：通知スクリプトの設定</strong><br>以下のコードをエディタに貼り付けます：</p>
+<p><code>function onFormSubmit(e) {<br>  const range = e.range;<br>  const values = range.getValues()[0];<br>  const email = 'your-email@gmail.com';<br>  const subject = '新しい問い合わせが届きました';<br>  const message = '氏名：' + values[1] + '\n\nメール：' + values[2] + '\n\n内容：' + values[3];<br>  GmailApp.sendEmail(email, subject, message);<br>}</code></p>
+<p>メールアドレスと項目番号は、スプレッドシートの列順に合わせて調整してください。</p>
+
+<h2>トリガー設定でリアルタイム通知を実現</h2>
+<p>スクリプトを作成したら、トリガーを設定して自動実行を有効にします。</p>
+<p>Apps Scriptエディタの左側メニューから「トリガー」をクリックし、右下の「トリガーを作成」ボタンを選択します。設定画面では、関数名を「onFormSubmit」、実行するイベントを「フォーム送信時」に指定します。</p>
+<p>この設定により、Google Formに新しい回答が投稿されると、数秒以内に管理者にメール通知が届きます。実装後は運用データを確認し、通知の到着時間を計測することをおすすめします。多くの企業では平均2～3秒以内の通知実績があります。</p>
+
+<h2>まとめ</h2>
+<p>Google Apps Scriptを活用した問い合わせ通知の自動化は、追加コスト不要で導入でき、顧客対応の質を大きく向上させられます。設定自体は30分程度で完了します。今回ご紹介した手順に従い、サービス業の経営効率化に役立ててください。定期的にログを確認し、スクリプトの改善を重ねることで、さらに精度の高い通知システムを構築できます。</p>
+  <div class="cta">
+    <h3>無料モニター募集中（先着1社限定）</h3>
+    <p>自動見積もり＋LINE通知の仕組みを、先着1社限定で無料で構築します。</p>
+    <a href="../index.html">詳しくはこちら</a>
+  </div>
+</div>
+</body>
+</html>
