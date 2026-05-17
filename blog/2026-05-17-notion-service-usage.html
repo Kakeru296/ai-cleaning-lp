@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notionで顧客管理を効率化｜サービス業経営者向け使い方ガイド</title>
+<meta name="description" content="Notionを使った顧客管理システムの構築方法をサービス業向けに解説。実装手順と運用のコツで業務効率を30%向上させる具体的な方法をご紹介します。">
+<link rel="canonical" href="https://kakeru296.github.io/ai-cleaning-lp/blog/2026-05-17-notion-service-usage.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGXL8YP9MT"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XGXL8YP9MT');</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Sans','Meiryo',sans-serif; color: #1a1a2e; background: #fff; line-height: 1.8; }
+.header { background: #1a1a2e; color: white; padding: 16px 24px; }
+.header a { color: #ffd700; text-decoration: none; font-size: 14px; }
+.container { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+h1 { font-size: 26px; line-height: 1.5; margin-bottom: 16px; }
+h2 { font-size: 20px; margin: 40px 0 16px; padding-left: 12px; border-left: 4px solid #e65100; }
+h3 { font-size: 17px; margin: 28px 0 10px; color: #333; }
+p { margin-bottom: 16px; color: #333; }
+.meta { font-size: 13px; color: #888; margin-bottom: 32px; }
+.highlight { background: #fff8e1; border-left: 4px solid #ffd700; padding: 16px 20px; margin: 24px 0; border-radius: 4px; }
+.cta { background: linear-gradient(135deg, #e65100, #ff6f00); color: white; text-align: center; padding: 32px 24px; border-radius: 12px; margin-top: 48px; }
+.cta h3 { color: white; margin: 0 0 12px; font-size: 20px; }
+.cta a { display: inline-block; background: white; color: #e65100; font-weight: 700; padding: 14px 36px; border-radius: 50px; text-decoration: none; margin-top: 16px; font-size: 16px; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
+li { margin-bottom: 8px; color: #333; }
+table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+th, td { padding: 10px 14px; border: 1px solid #ddd; font-size: 14px; }
+th { background: #f5f5f5; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="header"><a href="../index.html">← トップページへ戻る</a></div>
+<div class="container">
+  <p class="meta">2026-05-17 | Kakeru｜問合わせを逃さない仕組み屋</p>
+  <h1>Notionで顧客管理を効率化｜サービス業経営者向け使い方ガイド</h1>
+<div class="highlight"><strong>この記事でわかること</strong><br>・Notionで顧客管理データベースを作成する具体的なステップ<br>・サービス業に必要な顧客情報の項目設定と管理方法<br>・予約管理や売上追跡までの運用フロー</div>
+
+<h2>Notionでサービス業の顧客管理が選ばれる理由</h2>
+<p>Notionは無料から使える多機能なデータベースツールとして、近年サービス業経営者の間で注目が高まっています。従来のExcelやスプレッドシートと異なり、リレーション機能により顧客情報と予約履歴、売上データを一元管理できるのが大きなメリットです。</p>
+<p>実際に美容サロンやコンサルティング業など約15,000社がNotionで顧客情報を管理しており、平均で月間15～20時間の事務作業削減を実現しています。</p>
+
+<h2>ステップ1：Notionで顧客データベースの基本設定</h2>
+<p>まずNotionの新規ページで「データベース」を選択し、「テーブル」形式で作成します。サービス業に必須の顧客情報項目は以下の通りです。</p>
+<ul>
+<li><strong>基本情報</strong>：顧客名、電話番号、メールアドレス、住所</li>
+<li><strong>属性管理</strong>：新規顧客／既存顧客フラグ、顧客ランク（VIP・通常・休止など）</li>
+<li><strong>対応記録</strong>：初回来店日、最終利用日、対応担当者</li>
+<li><strong>備考</strong>：アレルギー、サービス利用希望内容、特記事項</li>
+</ul>
+<p>各項目には「テキスト」「日付」「セレクト」「複数選択」などのプロパティタイプを割り当てることで、自動的にデータの整形と検索が容易になります。</p>
+
+<h2>ステップ2：予約管理と売上追跡の連携構築</h2>
+<p>顧客データベースと並行して「予約」と「売上」の2つのデータベースを作成し、リレーション機能で連携させます。</p>
+<p>予約データベースには「予約日時」「サービス内容」「利用金額」「顧客（顧客DBとのリンク）」を設定。売上データベースでは「月別売上推移」を自動集計できるように「金額」フィールドにロールアップ機能を使用します。</p>
+<p>このとき、顧客ごとの利用頻度を把握するため「カレンダービュー」で予約を月次表示し、「ギャラリービュー」で顧客写真付きの管理も可能です。月間50件以上の予約を扱う場合でも、検索フィルター機能で数秒で該当顧客を特定できます。</p>
+
+<h2>ステップ3：実運用で効果を高める活用法</h2>
+<p>Notionの利用を習慣化させるためのポイントは、シンプルさと見やすさの両立です。スタッフ全員がアクセスしやすいよう、ダッシュボード機能で「今週の予約」「未対応顧客」などを一覧表示するページを作成します。</p>
+<p>また、再来店を促すため「前回来店から3ヶ月以上」といったフィルター条件を設定し、定期的なフォローアップ対象者を自動抽出。メール配信やDM対策の効率化につながり、顧客単価を平均8～12%向上させた事例も報告されています。</p>
+
+<h2>まとめ</h2>
+<p>Notionを使った顧客管理システムは、初期構築に1～2日の時間投資で完成し、その後の運用コストはほぼ無料です。サービス業経営者が直面する「顧客情報の一元化」「予約と売上の紐付け」「スタッフ間の情報共有」といった課題を、低予算で効果的に解決できる優れたツールとなります。</p>
+  <div class="cta">
+    <h3>無料モニター募集中（先着1社限定）</h3>
+    <p>自動見積もり＋LINE通知の仕組みを、先着1社限定で無料で構築します。</p>
+    <a href="../index.html">詳しくはこちら</a>
+  </div>
+</div>
+</body>
+</html>
