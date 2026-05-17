@@ -1,4 +1,4 @@
-name: note.com記事自動生成
+name: note.com記事自動生成＆投稿
 
 on:
   schedule:
@@ -9,9 +9,9 @@ permissions:
   contents: write
 
 jobs:
-  generate:
+  generate-and-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +30,15 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
         run: node seo/note-articles.js
+
+      - name: Playwright インストール
+        run: npx playwright install chromium --with-deps
+
+      - name: note.com自動投稿
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+        run: node seo/post-to-note.js
 
       - name: 生成記事をコミット
         run: |
