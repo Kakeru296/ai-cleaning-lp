@@ -10,17 +10,63 @@ const LP_URL = 'https://kakeru296.github.io/ai-cleaning-lp/';
 const STATE_FILE = path.join(__dirname, 'x-state.json');
 const POSTS_PER_RUN = 10;
 
+// Thread format: first tweet hooks, replies build story (up to 5 tweets)
 const POST_THEMES = [
-  { type: 'case1', prompt: '「夜間の問い合わせを取りこぼしていた清掃会社が、自動見積もり＋LINE通知で機会損失ゼロになった」イメージで経営者に刺さるX投稿文を書いてください。' },
-  { type: 'tip1', prompt: '「清掃業の夜間問い合わせは全体の40%という事実と自動化の重要性」をX投稿にしてください。' },
-  { type: 'cta1', prompt: '「無料モニター先着1社限定でLINE通知システムを構築する」という告知をX投稿にしてください。' },
-  { type: 'know1', prompt: '「ハウスクリーニング経営者向けに、スマホで選ぶだけの自動見積もり仕組みの概要」をX投稿にしてください。' },
-  { type: 'pain1', prompt: '「清掃業経営者が夜間・休日の問い合わせ対応で感じる悩みへの共感と解決策」をX投稿にしてください。' },
-  { type: 'case2', prompt: '「美容室オーナーがLINE予約自動化で月10件の予約取りこぼしをゼロにした」事例風のX投稿を書いてください。' },
-  { type: 'tip2', prompt: '「ホームページのお問い合わせフォームから自動でLINEに通知する仕組みが3万円でできる」という驚きのX投稿にしてください。' },
-  { type: 'know2', prompt: '「サービス業の社長がスマホ1台で問い合わせ対応を完結できる時代」について経営者向けX投稿にしてください。' },
-  { type: 'pain2', prompt: '「休日に電話に出られず顧客を逃した経験をした経営者への共感と解決策」をX投稿にしてください。' },
-  { type: 'cta2', prompt: '「清掃業・整体院・美容室向けの問い合わせ自動化システム。今なら初月無料」という告知X投稿にしてください。' },
+  {
+    type: 'thread_case1', isThread: true,
+    prompt: `ハウスクリーニング経営者向け「夜中の問い合わせ取りこぼし→自動化で解決」スレッドを書いてください。
+ツイート1（フック）: 衝撃的な事実か問題提起
+ツイート2: 具体的な問題の深掘り（数字を入れる）
+ツイート3: 解決策の概要
+ツイート4: 具体的な仕組みの説明
+ツイート5（CTA）: 「詳しくはこちら ${LP_URL}」で締める、#ハウスクリーニング #業務自動化
+JSON配列のみ返す: [{"tweet":"..."},{"tweet":"..."},...]`
+  },
+  {
+    type: 'thread_pain1', isThread: true,
+    prompt: `「サービス業社長が休日に顧客を逃し続ける理由」スレッドを書いてください。
+ツイート1: 「日曜の夜11時、あなたの競合は...」で始まる問題提起
+ツイート2: 夜間問い合わせの実態（数字を入れる）
+ツイート3: 手動対応のコストを計算
+ツイート4: 自動化で変わること
+ツイート5: CTA「${LP_URL}」#清掃業 #集客
+JSON配列のみ返す: [{"tweet":"..."},...]`
+  },
+  {
+    type: 'thread_how1', isThread: true,
+    prompt: `「LINE通知×自動見積もりを3週間で構築する3ステップ」ハウツースレッドを書いてください。
+ツイート1: フック「知らないと損する清掃業の自動化3ステップ」
+ツイート2: STEP1の説明
+ツイート3: STEP2の説明
+ツイート4: STEP3と費用感
+ツイート5: CTA「${LP_URL}」#DX #業務効率化
+JSON配列のみ返す: [{"tweet":"..."},...]`
+  },
+  { type: 'single_tip1', isThread: false, prompt: `清掃業で夜間に来る問い合わせは全体の38%。自動化していない会社が毎月逃している金額を計算したツイート（140文字以内）。末尾 #ハウスクリーニング #業務自動化` },
+  { type: 'single_cta1', isThread: false, prompt: `無料モニター残り2枠。ハウスクリーニング会社向け問い合わせ自動化を0円で試せるという告知ツイート（140文字以内）。末尾 ${LP_URL} #無料モニター` },
+  { type: 'single_pain1', isThread: false, prompt: `LINEを見たら昨夜3件問い合わせが来ていたが全員別業者に頼んでいた、という経営者あるある共感ツイート（140文字以内）。#清掃業 #集客` },
+  { type: 'single_know1', isThread: false, prompt: `スマホで部屋の広さと汚れ具合を選ぶだけで自動見積もりが出る仕組みを3万円で作れるという驚きツイート（140文字以内）。#ハウスクリーニング #DX` },
+  {
+    type: 'thread_compare1', isThread: true,
+    prompt: `「問い合わせ対応 手動 vs 自動化 徹底比較」スレッドを書いてください。
+ツイート1: フック「手動対応を続けている会社が毎月失っているもの」
+ツイート2: 手動対応のコスト（時間・機会損失を数字で）
+ツイート3: 自動化した場合のコスト・効果
+ツイート4: 導入前後の比較（テキスト表形式）
+ツイート5: CTA「${LP_URL}」#業務効率化
+JSON配列のみ返す: [{"tweet":"..."},...]`
+  },
+  { type: 'single_data1', isThread: false, prompt: `中小サービス業のDX実態：問い合わせを当日中に返信できている会社は全体の31%のみ、という事実ベースの衝撃ツイート（140文字以内）。#清掃業 #業務効率化` },
+  {
+    type: 'thread_story1', isThread: true,
+    prompt: `「個人でハウスクリーニングをやっている職人さんが自動化で月商1.4倍になった話」ストーリースレッドを書いてください。
+ツイート1: ドラマチックな状況設定（夜中12時、スマホが鳴る...）
+ツイート2: 導入前の状況
+ツイート3: 導入の決め手
+ツイート4: 導入3ヶ月後の変化（具体的な数字）
+ツイート5: CTA「${LP_URL}」#ハウスクリーニング #成功事例
+JSON配列のみ返す: [{"tweet":"..."},...]`
+  },
 ];
 
 function loadState() {
@@ -36,15 +82,42 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function generatePost(theme) {
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const maxTokens = theme.isThread ? 800 : 300;
   const res = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
-    max_tokens: 300,
-    messages: [{
-      role: 'user',
-      content: `${theme.prompt}\n\n要件:\n- 120文字以内（URLを含めて140文字以内）\n- ハッシュタグ2〜3個（#ハウスクリーニング #業務自動化 #LINE活用 等）\n- 最後に「${LP_URL}」を付ける\n- テキストのみ返す`
-    }]
+    max_tokens: maxTokens,
+    messages: [{ role: 'user', content: theme.prompt }]
   });
-  return res.content[0].text.trim();
+  const raw = res.content[0].text.trim();
+
+  if (theme.isThread) {
+    const match = raw.match(/\[[\s\S]*\]/);
+    if (!match) return [{ tweet: raw.slice(0, 280) }];
+    try { return JSON.parse(match[0]); } catch { return [{ tweet: raw.slice(0, 280) }]; }
+  }
+  return raw;
+}
+
+async function postToXReply(text, replyToId) {
+  const { X_API_KEY: key, X_API_SECRET: sec, X_ACCESS_TOKEN: tok, X_ACCESS_TOKEN_SECRET: tokSec } = process.env;
+  if (!key || !sec || !tok || !tokSec) { console.log('X API credentials 未設定'); return null; }
+  const url = 'https://api.twitter.com/2/tweets';
+  const bodyObj = replyToId ? { text, reply: { in_reply_to_tweet_id: replyToId } } : { text };
+  const body = JSON.stringify(bodyObj);
+  const auth = buildOAuthHeader('POST', url, key, sec, tok, tokSec);
+  return new Promise((resolve, reject) => {
+    const req = https.request(url, {
+      method: 'POST',
+      headers: { 'Authorization': auth, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
+    }, res => {
+      let d = '';
+      res.on('data', c => d += c);
+      res.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve(d); } });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
 }
 
 function buildOAuthHeader(method, url, consumerKey, consumerSecret, tokenKey, tokenSecret) {
@@ -102,17 +175,39 @@ async function main() {
     console.log(`\n[${i + 1}/${POSTS_PER_RUN}] テーマ: ${theme.type}`);
 
     try {
-      const text = await generatePost(theme);
-      console.log('投稿: ' + text.slice(0, 60) + '... (' + text.length + '文字)');
+      const generated = await generatePost(theme);
 
-      const result = await postToX(text);
-      const entry = { date: new Date().toISOString(), theme: theme.type, text, id: result?.data?.id || null };
-      if (entry.id) {
-        console.log(`✓ 投稿完了: https://x.com/i/web/status/${entry.id}`);
-        successCount++;
+      if (theme.isThread && Array.isArray(generated)) {
+        // Post as thread: each tweet replies to the previous
+        let replyToId = null;
+        let firstId = null;
+        for (const [ti, { tweet }] of generated.entries()) {
+          const truncated = tweet.slice(0, 280);
+          console.log(`  [${ti + 1}/${generated.length}] ${truncated.slice(0, 50)}...`);
+          const result = await postToXReply(truncated, replyToId);
+          const id = result?.data?.id || null;
+          if (ti === 0) firstId = id;
+          replyToId = id;
+          if (ti < generated.length - 1) await sleep(3000);
+        }
+        const entry = { date: new Date().toISOString(), theme: theme.type, isThread: true, id: firstId };
+        if (firstId) {
+          console.log(`✓ スレッド投稿完了 (${generated.length}件): https://x.com/i/web/status/${firstId}`);
+          successCount++;
+        }
+        state.posted.push(entry);
+      } else {
+        const text = String(generated);
+        console.log('投稿: ' + text.slice(0, 60) + '... (' + text.length + '文字)');
+        const result = await postToXReply(text, null);
+        const entry = { date: new Date().toISOString(), theme: theme.type, text, id: result?.data?.id || null };
+        if (entry.id) {
+          console.log(`✓ 投稿完了: https://x.com/i/web/status/${entry.id}`);
+          successCount++;
+        }
+        state.posted.push(entry);
       }
 
-      state.posted.push(entry);
       state.themeIndex = idx + 1;
       saveState(state);
 

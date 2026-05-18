@@ -96,37 +96,72 @@ async function generateArticle(keyword, intent) {
     'case': '具体的な事例・効果を示すケーススタディ'
   };
 
-  const prompt = `あなたはSEOに強い日本語ライターです。以下のキーワードで検索するサービス業の経営者向けに、実用的な記事を書いてください。
+  // LSI keywords to enrich content naturally
+  const lsiMap = {
+    'LINE': '公式アカウント, チャット, メッセージ, 通知, 無料プラン',
+    '自動化': '効率化, 省力化, システム化, DX, デジタル化',
+    '見積もり': '料金表, 価格, コスト, 費用, 相見積もり',
+    '問い合わせ': 'お問い合わせ, 問合せ, コンタクト, 集客, 顧客獲得',
+    '清掃': 'ハウスクリーニング, 掃除, 清掃業者, 清掃会社',
+    'GAS': 'Google Apps Script, スプレッドシート, Googleフォーム',
+  };
+  const lsiKws = Object.entries(lsiMap)
+    .filter(([k]) => keyword.includes(k))
+    .map(([,v]) => v).join(', ') || '問い合わせ自動化, LINE通知, 業務効率化';
+
+  // Collect recent blog filenames for internal links
+  let internalLinks = '';
+  try {
+    const files = fs.readdirSync(BLOG_DIR)
+      .filter(f => f.endsWith('.html') && f !== 'index.html')
+      .sort().reverse().slice(0, 3);
+    internalLinks = files.map(f => {
+      const c = fs.readFileSync(path.join(BLOG_DIR, f), 'utf8');
+      const t = (c.match(/<title>(.*?)<\/title>/) || [])[1] || f;
+      return `<li><a href="${f}">${t}</a></li>`;
+    }).join('');
+  } catch {}
+
+  const internalLinkSection = internalLinks
+    ? `<h2>関連記事</h2><ul>${internalLinks}</ul>`
+    : '';
+
+  const prompt = `あなたはSEOに強い日本語ライターです。以下のキーワードで検索するサービス業の経営者向けに、検索上位を狙える高品質な記事を書いてください。
 
 キーワード: ${keyword}
+関連キーワード（自然に含める）: ${lsiKws}
 記事スタイル: ${intentGuide[intent] || '情報提供記事'}
 
 必ずJSON形式で返してください（他のテキストは不要）:
 {
-  "title": "タイトル（キーワードを含む60文字以内）",
-  "description": "メタディスクリプション（キーワードを含む120文字以内）",
-  "body": "HTML本文（以下の要件を満たすこと）"
+  "title": "タイトル（キーワードを含む60文字以内・数字か疑問形を使う）",
+  "description": "メタディスクリプション（キーワードを含む120文字以内・ベネフィットを明記）",
+  "body": "HTML本文"
 }
 
-本文要件:
+本文要件（全て必須）:
 1. 冒頭: <div class="highlight"><strong>この記事でわかること</strong><br>・ポイント1<br>・ポイント2<br>・ポイント3</div>
-2. H2見出し3〜4個（キーワード関連の重要トピックを網羅）
-3. 具体的な数字や事例を含める
-4. 最後のH2は「まとめ」
-5. 800〜1200文字
-6. 架空の企業名・サービス名は使わない
-7. h1タグとCTAは含めない（外部から追加される）`;
+2. H2見出し5〜6個（キーワードの検索意図を完全網羅）
+3. 各H2配下にH3を1〜2個設ける
+4. 具体的な数字・比較・ステップを含める（「○○%削減」「○分で完了」等）
+5. FAQ セクション（H2「よくある質問」＋3問、各Q/Aを<dt><dd>タグで）
+6. 最後のH2は「まとめ」
+7. 2000〜2500文字（必ず守ること）
+8. 架空の企業名・サービス名は使わない
+9. h1タグとCTAは含めない（外部から追加される）`;
 
   const response = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
-    max_tokens: 2000,
+    max_tokens: 4000,
     messages: [{ role: 'user', content: prompt }]
   });
 
   const text = response.content[0].text;
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('JSON not found in response');
-  return JSON.parse(match[0]);
+  const result = JSON.parse(match[0]);
+  if (internalLinkSection) result.body += internalLinkSection;
+  return result;
 }
 
 function updateBlogIndex() {
@@ -229,7 +264,7 @@ async function generateArticles(count = 25) {
       const filename = `${date}-${slug}.html`;
       const filepath = path.join(BLOG_DIR, filename);
 
-      fs.writeFileSync(filepath, htmlTemplate({ title: article.title, description: article.description, filename, date }, article.body));
+      fs.writeFileSync(filepath, htmlTemplate({ title: article.title, description: article.description, filename, date }, article.body + internalLinkSection));
       generated.add(kw);
       newFiles.push({ filename, title: article.title, date });
       state.generated = [...generated];
