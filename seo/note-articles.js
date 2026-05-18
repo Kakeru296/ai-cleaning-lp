@@ -7,6 +7,7 @@ const path = require('path');
 
 const DRAFTS_DIR = path.join(__dirname, 'note-drafts');
 const LP_URL = 'https://kakeru296.github.io/ai-cleaning-lp/';
+const ARTICLES_PER_RUN = 5;
 
 const NOTE_KEYWORDS = [
   { kw: 'ハウスクリーニング LINE 通知 自動化 方法', intent: 'how-to' },
@@ -21,6 +22,19 @@ const NOTE_KEYWORDS = [
   { kw: '害虫駆除 緊急 問い合わせ 24時間 対応 仕組み', intent: 'how-to' },
   { kw: 'リフォーム会社 問い合わせ 自動化 費用 相場', intent: 'info' },
   { kw: 'ネイルサロン LINE予約 自動化 無料 設定方法', intent: 'how-to' },
+  { kw: '美容室 ホームページ 予約 自動化 LINE連携', intent: 'how-to' },
+  { kw: '整体院 問い合わせ 自動返信 予約管理 効率化', intent: 'how-to' },
+  { kw: 'ペットサロン 予約 LINE 自動化 集客', intent: 'how-to' },
+  { kw: 'ホームページ お問い合わせフォーム LINE 連動 無料', intent: 'how-to' },
+  { kw: '清掃業 売上アップ IT活用 小規模事業者', intent: 'info' },
+  { kw: 'サービス業 DX デジタル化 簡単 始め方', intent: 'info' },
+  { kw: '問い合わせ 自動化 月3万円 効果 事例', intent: 'info' },
+  { kw: 'ハウスクリーニング 口コミ 集め方 Google レビュー', intent: 'info' },
+  { kw: '水道修理 緊急 問い合わせ 自動 LINE通知', intent: 'how-to' },
+  { kw: '引越し 見積もり 自動化 ホームページ 活用', intent: 'how-to' },
+  { kw: 'コインランドリー 問い合わせ 自動化 地域密着', intent: 'how-to' },
+  { kw: '清掃 フランチャイズ 問い合わせ システム 比較', intent: 'info' },
+  { kw: 'エアコン クリーニング 予約 自動化 夏季 対策', intent: 'how-to' },
 ];
 
 function loadState() {
@@ -65,54 +79,57 @@ async function generateArticle(keyword, intent) {
   return JSON.parse(match[0]);
 }
 
-async function sendEmail(user, pass, subject, body) {
+async function sendEmail(user, pass, articles) {
   const t = nodemailer.createTransport({ service: 'gmail', auth: { user, pass } });
-  await t.sendMail({ from: user, to: user, subject, text: body });
+  const body = articles.map((a, i) =>
+    `━━━ 記事${i + 1}: ${a.title} ━━━\n\n${a.content}\n`
+  ).join('\n\n');
+  await t.sendMail({
+    from: user, to: user,
+    subject: `【note記事${articles.length}本】${articles[0].title} 他`,
+    text: `📝 本日のnote記事${articles.length}本が生成されました！\n\n${body}\n\nhttps://note.com/kakeru_web`
+  });
 }
 
 async function main() {
   if (!process.env.ANTHROPIC_API_KEY) { console.log('ANTHROPIC_API_KEY 未設定'); return; }
-
   if (!fs.existsSync(DRAFTS_DIR)) fs.mkdirSync(DRAFTS_DIR, { recursive: true });
 
   const state = loadState();
-  const posted = new Set(state.posted);
-  const remaining = NOTE_KEYWORDS.filter(k => !posted.has(k.kw));
+  let remaining = NOTE_KEYWORDS.filter(k => !state.posted.includes(k.kw));
 
-  if (remaining.length === 0) {
+  if (remaining.length < ARTICLES_PER_RUN) {
     state.posted = [];
     saveState(state);
+    remaining = NOTE_KEYWORDS.slice();
     console.log('全キーワード完了。リセットしました。');
-    return;
   }
 
-  const target = remaining[0];
-  console.log(`生成中: ${target.kw}`);
+  const targets = remaining.slice(0, ARTICLES_PER_RUN);
+  const articles = [];
 
-  const article = await generateArticle(target.kw, target.intent);
-  const date = new Date().toISOString().split('T')[0];
-  const filename = `${date}-note.md`;
-  const content = `# ${article.title}\n\n${article.content}`;
-
-  fs.writeFileSync(path.join(DRAFTS_DIR, filename), content);
-  console.log(`✓ 保存: seo/note-drafts/${filename}`);
-
-  const gmailUser = process.env.GMAIL_USER;
-  const gmailPass = process.env.GMAIL_APP_PASS;
-  if (gmailUser && gmailPass) {
-    const body = `📝 今週のnote記事が生成されました！\n\n` +
-      `タイトル: ${article.title}\n` +
-      `キーワード: ${target.kw}\n\n` +
-      `━━━ 記事内容 ━━━\n\n${article.content}\n\n` +
-      `━━━━━━━━━━━━━━━\n` +
-      `👆 note.comにコピペして投稿してください（3分）\nhttps://note.com/`;
-    await sendEmail(gmailUser, gmailPass, `【note記事】${article.title}`, body);
-    console.log('✓ メール送信完了');
+  for (const target of targets) {
+    console.log(`生成中: ${target.kw}`);
+    try {
+      const article = await generateArticle(target.kw, target.intent);
+      const date = new Date().toISOString().split('T')[0];
+      const slug = target.kw.slice(0, 15).replace(/\s/g, '-');
+      const filename = `${date}-${articles.length + 1}-${slug}.md`;
+      fs.writeFileSync(path.join(DRAFTS_DIR, filename), `# ${article.title}\n\n${article.content}`);
+      console.log(`✓ 保存: ${filename}`);
+      articles.push(article);
+      state.posted.push(target.kw);
+      saveState(state);
+    } catch (err) {
+      console.error(`エラー:`, err.message);
+    }
   }
 
-  state.posted.push(target.kw);
-  saveState(state);
-  console.log(`完了: "${article.title}"`);
+  if (articles.length > 0 && process.env.GMAIL_USER && process.env.GMAIL_APP_PASS) {
+    await sendEmail(process.env.GMAIL_USER, process.env.GMAIL_APP_PASS, articles);
+    console.log(`✓ メール送信完了 (${articles.length}本)`);
+  }
+  console.log(`\n✅ 本日の記事生成: ${articles.length}/${ARTICLES_PER_RUN}本`);
 }
 
 main().catch(console.error);
