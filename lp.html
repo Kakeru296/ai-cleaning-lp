@@ -456,13 +456,10 @@ async function submitOrder() {
   btn.textContent = '送信中...'; btn.disabled = true;
 
   const payload = {
-    name, phone,
+    company, name, email, phone, area, plan, note,
     service: `【LP申込】${plan}`,
-    room: company, dirty: area,
-    price: plan.match(/[\d,]+円/)?.[0] || '',
     submitted_at: new Date().toLocaleString('ja-JP'),
-    date: email,
-    note,
+    price: plan.match(/[\d,]+円/)?.[0] || '',
   };
 
   try {
