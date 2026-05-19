@@ -14,14 +14,15 @@ function load() {
 
 function save(d) { fs.writeFileSync(REVENUE_FILE, JSON.stringify(d, null, 2)); }
 
-async function sendLineNotify(msg) {
-  const token = process.env.LINE_NOTIFY_TOKEN;
-  if (!token) return;
+async function sendLinePush(msg) {
+  const token  = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+  const userId = process.env.LINE_USER_ID;
+  if (!token || !userId) return;
+  const body = JSON.stringify({ to: userId, messages: [{ type: 'text', text: msg }] });
   return new Promise((resolve) => {
-    const body = `message=${encodeURIComponent(msg)}`;
     const req = https.request({
-      hostname: 'notify-api.line.me', path: '/api/notify', method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(body) },
+      hostname: 'api.line.me', path: '/v2/bot/message/push', method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
     }, res => { res.on('data', () => {}); res.on('end', resolve); });
     req.on('error', resolve);
     req.write(body); req.end();
@@ -71,7 +72,7 @@ async function main() {
   const insight = await generateInsight(stats);
   if (insight) console.log(`\n💡 AI提案: ${insight}`);
 
-  await sendLineNotify(`\n📊 週次収益レポート\n💰 売上: ¥${stats.totalWon.toLocaleString()}\n📥 リード: ${stats.totalLeads}件（転換率${stats.convRate}%）\n今週: ${stats.weekLeads.length}件${insight ? '\n💡' + insight.substring(0, 80) : ''}`);
+  await sendLinePush(`📊 週次収益レポート\n💰 売上: ¥${stats.totalWon.toLocaleString()}\n📥 リード: ${stats.totalLeads}件（転換率${stats.convRate}%）\n今週: ${stats.weekLeads.length}件${insight ? '\n💡' + insight.substring(0, 80) : ''}`);
 
   data.total_won = stats.totalWon;
   save(data);

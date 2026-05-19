@@ -29,14 +29,25 @@ function loadRevenue() {
 
 function saveRevenue(d) { fs.writeFileSync(REVENUE_FILE, JSON.stringify(d, null, 2)); }
 
-async function sendLineNotify(message) {
-  const token = process.env.LINE_NOTIFY_TOKEN;
-  if (!token) return;
+async function sendLinePush(message) {
+  // LINE Messaging API push (チャネルアクセストークン + ユーザーID or グループID)
+  const token  = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+  const userId = process.env.LINE_USER_ID; // 自分のLINEユーザーID
+  if (!token || !userId) {
+    console.log('[LINE] トークン/UserID未設定 → スキップ');
+    return;
+  }
+  const body = JSON.stringify({ to: userId, messages: [{ type: 'text', text: message }] });
   return new Promise((resolve) => {
-    const body = `message=${encodeURIComponent(message)}`;
     const req = https.request({
-      hostname: 'notify-api.line.me', path: '/api/notify', method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(body) },
+      hostname: 'api.line.me',
+      path: '/v2/bot/message/push',
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body),
+      },
     }, res => { res.on('data', () => {}); res.on('end', resolve); });
     req.on('error', resolve);
     req.write(body); req.end();
@@ -102,7 +113,7 @@ async function main() {
 
     console.log(`\n✨ [${source.label}] ${subject}`);
 
-    await sendLineNotify(`\n🔔 新規リード！\n📌 ${source.label}\n📧 ${subject}\n📝 ${snippet.substring(0, 80)}\n⚡ 今すぐ返信！`);
+    await sendLinePush(`🔔 新規リード！\n📌 ${source.label}\n📧 ${subject}\n📝 ${snippet.substring(0, 80)}\n⚡ 今すぐ返信！`);
 
     let draftGenerated = false;
     if (process.env.ANTHROPIC_API_KEY) {
