@@ -29,24 +29,20 @@ function loadRevenue() {
 
 function saveRevenue(d) { fs.writeFileSync(REVENUE_FILE, JSON.stringify(d, null, 2)); }
 
-async function sendLinePush(message) {
-  // LINE Messaging API push (チャネルアクセストークン + ユーザーID or グループID)
-  const token  = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-  const userId = process.env.LINE_USER_ID; // 自分のLINEユーザーID
-  if (!token || !userId) {
-    console.log('[LINE] トークン/UserID未設定 → スキップ');
-    return;
-  }
-  const body = JSON.stringify({ to: userId, messages: [{ type: 'text', text: message }] });
+async function sendPushNotification(title, message) {
+  // ntfy.sh — 無料・アカウント不要のプッシュ通知
+  const topic = process.env.NTFY_TOPIC || 'kakeru-leads-2026';
   return new Promise((resolve) => {
+    const body = Buffer.from(message);
     const req = https.request({
-      hostname: 'api.line.me',
-      path: '/v2/bot/message/push',
+      hostname: 'ntfy.sh',
+      path: `/${topic}`,
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(body),
+        'Title': encodeURIComponent(title),
+        'Priority': 'urgent',
+        'Tags': 'bell,money_with_wings',
+        'Content-Length': body.length,
       },
     }, res => { res.on('data', () => {}); res.on('end', resolve); });
     req.on('error', resolve);
@@ -113,7 +109,7 @@ async function main() {
 
     console.log(`\n✨ [${source.label}] ${subject}`);
 
-    await sendLinePush(`🔔 新規リード！\n📌 ${source.label}\n📧 ${subject}\n📝 ${snippet.substring(0, 80)}\n⚡ 今すぐ返信！`);
+    await sendPushNotification(`🔔 新規リード [${source.label}]`, `件名: ${subject}\n内容: ${snippet.substring(0, 80)}\n⚡ 今すぐ返信！`);
 
     let draftGenerated = false;
     if (process.env.ANTHROPIC_API_KEY) {
