@@ -1,0 +1,46 @@
+name: リード監視・即時LINE通知（15分ごと）
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # 15分ごと
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install
+
+      - name: リード監視・下書き生成
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+        run: node seo/lead-monitor.js
+
+      - name: 状態・収益データをコミット
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add seo/lead-state.json seo/revenue.json 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "変更なし"
+          else
+            git commit -m "chore: リード監視更新 $(date '+%Y-%m-%d %H:%M')"
+            git push
+          fi

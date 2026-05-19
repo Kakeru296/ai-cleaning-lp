@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   report:
@@ -32,3 +32,19 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
         run: node seo/weekly-report.js
+
+      - name: 収益トラッカー（AI分析・LINE通知）
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+        run: node seo/revenue-tracker.js
+
+      - name: 収益データをコミット
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add seo/revenue.json 2>/dev/null || true
+          if git diff --staged --quiet; then echo "変更なし"; else
+            git commit -m "chore: 週次収益データ更新 $(date '+%Y-%m-%d')"
+            git push
+          fi
