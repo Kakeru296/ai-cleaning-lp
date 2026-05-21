@@ -26,18 +26,34 @@ async function main() {
   if (!draft) { console.log('投稿する下書きなし'); process.exit(0); }
   console.log(`投稿予定: "${draft.title}"`);
 
-  const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
-  const page = await browser.newPage();
+  const browser = await chromium.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-blink-features=AutomationControlled']
+  });
+  const context = await browser.newContext({
+    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    locale: 'ja-JP',
+    timezoneId: 'Asia/Tokyo'
+  });
+  const page = await context.newPage();
 
   try {
     // ログイン
-    await page.goto('https://note.com/login?redirectPath=%2F', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('input[name="email"]', { timeout: 10000 });
-    await page.fill('input[name="email"]', email);
-    await page.fill('input[name="password"]', password);
+    await page.goto('https://note.com/login?redirectPath=%2F', { waitUntil: 'networkidle', timeout: 30000 });
+    await page.waitForTimeout(2000);
+
+    const emailSel = 'input[name="email"], input[type="email"], input[placeholder*="メール"]';
+    await page.waitForSelector(emailSel, { timeout: 30000 });
+    await page.fill(emailSel, email);
+
+    const passSel = 'input[name="password"], input[type="password"]';
+    await page.waitForSelector(passSel, { timeout: 10000 });
+    await page.fill(passSel, password);
+
     await page.click('button[type="submit"]');
-    await page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 15000 });
-    console.log('✓ ログイン完了');
+    await page.waitForURL('**/note.com/**', { timeout: 20000 }).catch(() => {});
+    await page.waitForTimeout(3000);
+    console.log('✓ ログイン完了 URL:', page.url());
 
     // 新規記事作成
     await page.goto('https://note.com/notes/new', { waitUntil: 'domcontentloaded' });
