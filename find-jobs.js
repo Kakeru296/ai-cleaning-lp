@@ -98,64 +98,59 @@ async function scrapeCrowdworks(page) {
   console.log('\n🔍 CrowdWorks (応募10件以下・IT系) を検索中...');
 
   // IT系カテゴリ: サイト構築・ウェブ開発(2), 業務システム・ソフトウェア(83)
+  // work_type省略 = 固定+時間単価の両方を取得して今日・昨日の通常案件を拾う
   const CW_URLS = [
-    'https://crowdworks.jp/public/jobs/category/2?order=new&work_type=1',
-    'https://crowdworks.jp/public/jobs/category/83?order=new&work_type=1'
+    'https://crowdworks.jp/public/jobs/category/2?order=new',
+    'https://crowdworks.jp/public/jobs/category/83?order=new'
   ];
 
+  // 今日・昨日の日付（JST、日本語表記）
+  const jst = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  const yesterday = new Date(jst.getTime() - 24 * 60 * 60 * 1000);
+  const fmt = d => `${d.getUTCFullYear()}年${String(d.getUTCMonth() + 1).padStart(2, '0')}月${String(d.getUTCDate()).padStart(2, '0')}日`;
+  const todayStr = fmt(jst);
+  const yesterdayStr = fmt(yesterday);
+
   for (const baseUrl of CW_URLS) {
-    for (let pageNum = 1; pageNum <= 3; pageNum++) {
-      const url = pageNum === 1 ? baseUrl : `${baseUrl}&page=${pageNum}`;
-      try {
-        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 25000 });
-      } catch (e) { break; }
-      await page.waitForTimeout(1500);
+    // 1ページ目のみ（新着順なので今日・昨日の案件が上位）
+    try {
+      await page.goto(baseUrl, { waitUntil: 'domcontentloaded', timeout: 25000 });
+    } catch (e) { continue; }
+    await page.waitForTimeout(1500);
 
-      const items = await page.evaluate(() => {
-        const results = [];
-        document.querySelectorAll('._root_b2jur_2').forEach(card => {
-          const titleEl = card.querySelector('a[href*="/public/jobs/"]');
-          if (!titleEl || !/\/public\/jobs\/\d+/.test(titleEl.href)) return;
+    const items = await page.evaluate(({ todayStr, yesterdayStr }) => {
+      const SES_PATTERN = /^⭐|JA-\d{6}/; // ⭐SES/派遣案件を除外
+      const results = [];
+      document.querySelectorAll('._root_b2jur_2').forEach(card => {
+        const titleEl = card.querySelector('a[href*="/public/jobs/"]');
+        if (!titleEl || !/\/public\/jobs\/\d+/.test(titleEl.href)) return;
 
-          const txt = card.textContent.replace(/\s+/g, ' ').trim();
+        const title = titleEl.textContent.trim();
+        if (SES_PATTERN.test(title)) return;
 
-          // 応募数抽出
-          const countMatch = txt.match(/応募数(\d+)\s*人/);
-          const proposals = countMatch ? parseInt(countMatch[1], 10) : 999;
+        const txt = card.textContent.replace(/\s+/g, ' ').trim();
+        if (!txt.includes(todayStr) && !txt.includes(yesterdayStr)) return; // 今日・昨日のみ
 
-          // 価格
-          const priceMatch = txt.match(/([\d,]+)\s*円/);
-          const price = priceMatch ? priceMatch[0] : '';
+        const countMatch = txt.match(/応募数(\d+)\s*人/);
+        const proposals = countMatch ? parseInt(countMatch[1], 10) : 0;
+        const priceMatch = txt.match(/([\d,]+)\s*円/);
+        const deadlineMatch = txt.match(/あと\s*\d+\s*日/);
 
-          // 締切
-          const deadlineMatch = txt.match(/あと\s*\d+\s*日/);
-          const deadline = deadlineMatch ? deadlineMatch[0] : '';
-
-          results.push({
-            title: titleEl.textContent.trim(),
-            url: titleEl.href,
-            proposals,
-            price,
-            deadline,
-            platform: 'CrowdWorks'
-          });
+        results.push({
+          title, url: titleEl.href, proposals,
+          price: priceMatch ? priceMatch[0] : '',
+          deadline: deadlineMatch ? deadlineMatch[0] : '',
+          platform: 'CrowdWorks'
         });
-        return results;
       });
+      return results;
+    }, { todayStr, yesterdayStr });
 
-      if (items.length === 0) {
-        await page.screenshot({ path: path.join(__dirname, 'cw-debug.png') });
-        console.log(`  ⚠ 取得失敗 → cw-debug.png確認 (URL: ${url.slice(0, 60)})`);
-        break;
-      }
-
-      let found = 0;
-      for (const job of items) {
-        if (job.proposals <= MAX_PROPOSALS) { jobs.push(job); found++; }
-      }
-      console.log(`  ページ${pageNum}: ${items.length}件中 ${found}件が${MAX_PROPOSALS}件以下`);
-      if (found === 0 && pageNum > 1) break;
+    let found = 0;
+    for (const job of items) {
+      if (job.proposals <= MAX_PROPOSALS) { jobs.push(job); found++; }
     }
+    console.log(`  今日・昨日の通常新着: ${items.length}件中 ${found}件が${MAX_PROPOSALS}件以下`);
   }
 
   return jobs;
