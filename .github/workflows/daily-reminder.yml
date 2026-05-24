@@ -2,7 +2,7 @@ name: 日次アウトリーチリマインダー
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # 毎日10:00 JST (UTC 01:00)
+    - cron: '0 0 * * *'  # 毎日09:00 JST (UTC 00:00)
   workflow_dispatch:
 
 permissions:
@@ -22,8 +22,9 @@ jobs:
 
       - run: npm install
 
-      - name: 朝のリマインダーをメール送信
+      - name: 朝のリマインダー送信（ntfy.sh + メール）
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASS: ${{ secrets.GMAIL_APP_PASS }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: node seo/daily-reminder.js

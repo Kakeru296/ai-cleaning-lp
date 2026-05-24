@@ -1,9 +1,10 @@
 'use strict';
 
-// 毎日10:00 JST: 今日の記事数通知 + アウトリーチリマインダーをメールで送信
+// 毎日09:00 JST: フリーランス4アクション + アウトリーチリマインダー
 const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
+const https = require('https');
 
 const BLOG_DIR = path.join(__dirname, '..', 'blog');
 
@@ -29,6 +30,25 @@ function todayTarget() {
   };
 }
 
+async function sendNtfy(topic, title, message) {
+  return new Promise((resolve) => {
+    const data = Buffer.from(message);
+    const req = https.request({
+      hostname: 'ntfy.sh',
+      path: `/${topic}`,
+      method: 'POST',
+      headers: {
+        'Title': title,
+        'Content-Type': 'text/plain',
+        'Content-Length': data.length
+      }
+    }, (res) => { res.resume(); resolve(res.statusCode); });
+    req.on('error', () => resolve(0));
+    req.write(data);
+    req.end();
+  });
+}
+
 async function sendEmail(user, pass, subject, body) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -47,25 +67,39 @@ async function main() {
   const { city, keyword } = todayTarget();
   const date = new Date().toISOString().split('T')[0];
 
+  const ntfyTopic = process.env.NTFY_TOPIC || 'kakeru-freelance';
+
+  // ntfy.sh プッシュ通知（4アクション）
+  const ntfyMsg =
+    `📋 今日の4アクション\n` +
+    `1️⃣ Lancers 新着5件に提案\n   https://www.lancers.jp/work/search?sort=new&open=1\n` +
+    `2️⃣ Coconala 新着5件に応募\n   https://coconala.com/requests/categories/11?order=new\n` +
+    `3️⃣ CrowdWorks 新着3件に提案\n   https://crowdworks.jp/public/jobs/search?order=new\n` +
+    `4️⃣ ミツモア 見積り確認\n   https://www.meetsmore.com/lancer/\n` +
+    `\n📰 SEO記事: 今日${todayCount}本 / 累計${totalCount}本`;
+  await sendNtfy(ntfyTopic, `【毎朝9時】フリーランス4アクション`, ntfyMsg);
+  console.log('✓ ntfy.sh 通知送信完了');
+
   let body = `おはようございます！ ${date}\n`;
   body += `${'─'.repeat(30)}\n`;
-  body += `今日の記事: ${todayCount}本生成\n`;
-  body += `累計: ${totalCount}本\n\n`;
-  body += `今日のアウトリーチ先\n`;
-  body += `  「${keyword} ${city}」\n\n`;
-  body += `アクションリスト\n`;
-  body += `  1. Coconalaメッセージ確認\n`;
-  body += `     https://coconala.com/mypage/dashboard\n`;
-  body += `  2. ${city}の${keyword}業者に電話 or DM\n`;
-  body += `     Googleマップ: https://maps.google.com/?q=${encodeURIComponent(keyword + ' ' + city)}\n`;
-  body += `  3. くらしのマーケットDM 5社\n`;
-  body += `     https://www.curama.jp/cleaning/list/\n\n`;
+  body += `▼ 今日の4アクション（フリーランス）\n\n`;
+  body += `1. Lancers 新着案件5件に提案\n`;
+  body += `   https://www.lancers.jp/work/search?sort=new&open=1\n\n`;
+  body += `2. Coconala 新着案件5件に応募\n`;
+  body += `   IT相談: https://coconala.com/requests/categories/11?order=new\n`;
+  body += `   AI活用: https://coconala.com/requests/categories/28?order=new\n`;
+  body += `   Web制作: https://coconala.com/requests/categories/22?order=new\n\n`;
+  body += `3. CrowdWorks 新着案件3件に提案\n`;
+  body += `   https://crowdworks.jp/public/jobs/search?order=new\n\n`;
+  body += `4. ミツモア 見積り・問い合わせ確認\n`;
+  body += `   https://www.meetsmore.com/lancer/\n\n`;
   body += `${'─'.repeat(30)}\n`;
+  body += `今日の記事: ${todayCount}本生成 / 累計: ${totalCount}本\n`;
+  body += `今日のアウトリーチ先: 「${keyword} ${city}」\n`;
   body += `目標: 今日1件問い合わせ獲得！\n`;
-  body += `LP: https://kakeru296.github.io/ai-cleaning-lp/\n`;
 
   console.log(body);
-  await sendEmail(gmailUser, gmailPass, `【日次】${date} 記事${todayCount}本 / アウトリーチ: ${city}`, body);
+  await sendEmail(gmailUser, gmailPass, `【毎朝】${date} 4アクション / 記事${todayCount}本`, body);
   console.log('✓ 朝のリマインダー送信完了 → ' + gmailUser);
 }
 
